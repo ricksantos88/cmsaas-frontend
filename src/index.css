@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+/* Modo escuro por classe no <html> — ver docs/guides/layout-model.md */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tokens do design system. Toda cor de tela sai daqui: componente não escreve
+ * `bg-slate-800` direto, escreve `bg-surface` / `text-muted` / `bg-primary`.
+ * Trocar a identidade visual da igreja = trocar este bloco.
+ */
+@theme {
+  --color-canvas: oklch(0.985 0.002 250);
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: oklch(0.97 0.003 250);
+  --color-border-subtle: oklch(0.91 0.005 250);
+
+  --color-content: oklch(0.21 0.02 260);
+  --color-content-muted: oklch(0.53 0.02 260);
+
+  --color-primary: oklch(0.48 0.15 258);
+  --color-primary-hover: oklch(0.42 0.15 258);
+  --color-primary-foreground: oklch(0.99 0 0);
+
+  --color-success: oklch(0.62 0.15 150);
+  --color-warning: oklch(0.75 0.15 75);
+  --color-danger: oklch(0.58 0.21 25);
+  --color-danger-foreground: oklch(0.99 0 0);
+
+  --radius-card: 0.75rem;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --spacing-sidebar: 16rem;
+  --spacing-topbar: 3.5rem;
+}
+
+@layer theme {
+  .dark {
+    --color-canvas: oklch(0.18 0.015 260);
+    --color-surface: oklch(0.23 0.017 260);
+    --color-surface-muted: oklch(0.27 0.018 260);
+    --color-border-subtle: oklch(0.33 0.018 260);
+
+    --color-content: oklch(0.96 0.005 260);
+    --color-content-muted: oklch(0.72 0.015 260);
+
+    --color-primary: oklch(0.66 0.14 258);
+    --color-primary-hover: oklch(0.72 0.14 258);
+    --color-primary-foreground: oklch(0.18 0.015 260);
+  }
+}
+
+@layer base {
+  html,
+  body {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-canvas text-content font-sans antialiased;
+  }
+
+  /* Foco visível é requisito de acessibilidade, não enfeite (ADR-003). */
+  :focus-visible {
+    @apply outline-primary outline-2 outline-offset-2;
+  }
+}
