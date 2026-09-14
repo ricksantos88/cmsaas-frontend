@@ -5,6 +5,7 @@ import type {
   LoginResponse,
   Member,
   MemberSummary,
+  MyChurchResponse,
   PastorSummary,
   ScheduleSummary,
 } from '@/shared/types/domain'
@@ -23,6 +24,15 @@ export const fakeSession: LoginResponse = {
     lastLoginAt: '2026-08-31T09:00:00Z',
   },
 }
+
+export const fakeMyChurches: MyChurchResponse[] = [
+  {
+    churchId: 'church-1',
+    churchName: 'Igreja Central',
+    roles: ['PASTOR_PRESIDENT'],
+    isCurrent: true,
+  },
+]
 
 export const fakeMember: Member = {
   id: 'member-1',
@@ -122,7 +132,10 @@ const fakeSchedules: PageResponse<ScheduleSummary> = {
 
 export const handlers = [
   http.post('*/api/v1/auth/login', () => HttpResponse.json(fakeSession)),
+  http.post('*/api/v1/auth/register-church', () => HttpResponse.json(fakeSession, { status: 201 })),
   http.get('*/api/v1/auth/me', () => HttpResponse.json(fakeSession.user)),
+  http.get('*/api/v1/auth/my-churches', () => HttpResponse.json(fakeMyChurches)),
+  http.post('*/api/v1/auth/switch-church', () => HttpResponse.json(fakeSession)),
   http.post('*/api/v1/auth/refresh', () =>
     HttpResponse.json({ accessToken: 'access-token', tokenType: 'Bearer', expiresIn: 3600 }),
   ),

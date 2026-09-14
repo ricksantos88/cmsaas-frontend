@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { cellsApi, type CellFilters, type CellPayload } from './cells.api'
-import { memberKeys } from '@/features/members/members.queries'
 
 export const cellKeys = {
   all: ['cells'] as const,
@@ -57,7 +56,7 @@ function useCellMembershipMutation<TVariables>(
     mutationFn,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: cellKeys.all })
-      void queryClient.invalidateQueries({ queryKey: memberKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ['members'] })
     },
   })
 }

@@ -4,7 +4,7 @@ import { refreshAccessToken, setSessionExpiredHandler } from '@/shared/api/http'
 import { tokenStore } from '@/shared/api/token-store'
 import { ADMIN_ROLES } from '@/shared/types/roles'
 import { hasRole } from './permissions'
-import type { LoginRequest, UserInfo } from '@/shared/types/domain'
+import type { AcceptInviteRequest, LoginRequest, RegisterChurchRequest, UserInfo } from '@/shared/types/domain'
 import { ApiError } from '@/shared/api/api-error'
 
 interface SessionState {
@@ -12,6 +12,9 @@ interface SessionState {
   /** `loading` até o boot decidir se há sessão válida — evita piscar o login. */
   status: 'loading' | 'authenticated' | 'anonymous'
   login: (credentials: LoginRequest) => Promise<void>
+  acceptInvite: (payload: AcceptInviteRequest) => Promise<void>
+  registerChurch: (payload: RegisterChurchRequest) => Promise<void>
+  switchChurch: (churchId: string) => Promise<void>
   logout: () => Promise<void>
   restore: () => Promise<void>
 }
@@ -32,6 +35,36 @@ export const useSessionStore = create<SessionState>((set) => ({
       )
     }
 
+    tokenStore.setAccessToken(session.accessToken)
+    tokenStore.setRefreshToken(session.refreshToken)
+    set({ user: session.user, status: 'authenticated' })
+  },
+
+  async acceptInvite(payload) {
+    const session = await authApi.acceptInvite(payload)
+
+    if (!hasRole(session.user.roles, ADMIN_ROLES)) {
+      throw new ApiError(
+        403,
+        'CHANNEL_NOT_ALLOWED',
+        'Este console é da administração da igreja. Membros acessam pelo aplicativo.',
+      )
+    }
+
+    tokenStore.setAccessToken(session.accessToken)
+    tokenStore.setRefreshToken(session.refreshToken)
+    set({ user: session.user, status: 'authenticated' })
+  },
+
+  async registerChurch(payload) {
+    const session = await authApi.registerChurch(payload)
+    tokenStore.setAccessToken(session.accessToken)
+    tokenStore.setRefreshToken(session.refreshToken)
+    set({ user: session.user, status: 'authenticated' })
+  },
+
+  async switchChurch(churchId: string) {
+    const session = await authApi.switchChurch({ churchId })
     tokenStore.setAccessToken(session.accessToken)
     tokenStore.setRefreshToken(session.refreshToken)
     set({ user: session.user, status: 'authenticated' })

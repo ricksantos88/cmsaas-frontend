@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router'
 import { z } from 'zod'
 import { useSaveSchedule, useSchedule } from './schedules.queries'
-import { usePastorOptions } from '@/features/pastors/pastors.queries'
+import { usePastorOptions } from '@/shared/queries/options.queries'
 import { Card, CardBody } from '@/shared/ui/card'
 import { Field } from '@/shared/ui/field'
 import { FormActions, FormRow, FormSection } from '@/shared/ui/form'

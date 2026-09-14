@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { LogOut, Menu, UserCog, X } from 'lucide-react'
 import { NAVIGATION } from './navigation'
+import { ChurchSwitcher } from './ChurchSwitcher'
 import { useSession } from '@/features/auth/useSession'
 import { useSessionStore } from '@/features/auth/session.store'
 import { useChurch } from '@/features/church/church.queries'
@@ -16,13 +17,14 @@ import {
 import { Skeleton } from '@/shared/ui/skeleton'
 import { cn } from '@/shared/lib/cn'
 import { initials } from '@/shared/lib/format'
+import type { ReactNode } from 'react'
 import { ROLE_LABELS } from '@/shared/types/roles'
 
 /**
  * Casca do console: sidebar fixa em desktop, gaveta em mobile, topbar com a
  * identidade do usuário. Estrutura descrita em docs/guides/layout-model.md.
  */
-export function AppShell() {
+export function AppShell({ children }: { children?: ReactNode } = {}) {
   const { user, roles, can } = useSession()
   const logout = useSessionStore((s) => s.logout)
   // Um usuário pertence a uma única igreja (ADR-003 do backend). Buscar só quando
@@ -134,6 +136,9 @@ export function AppShell() {
             <Menu aria-hidden />
           </Button>
 
+          {/* Seletor de congregações (ADR-009) */}
+          <ChurchSwitcher />
+
           {/* Identidade e ações da conta ficam no canto superior direito. */}
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -166,7 +171,7 @@ export function AppShell() {
         </header>
 
         <main id="conteudo" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
     </div>

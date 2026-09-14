@@ -19,7 +19,7 @@ import { formatCurrency, formatDateTime } from '@/shared/lib/format'
 import { SCHEDULE_STATUS_LABELS, SCHEDULE_STATUS_TONES, SCHEDULE_TYPE_LABELS } from '@/shared/types/labels'
 
 /**
- * Painel do console.
+ * Painel do console (ADR-006 R3: tela agregadora sem dono de domínio vive em `pages/`).
  *
  * A API não tem endpoint de dashboard agregado: cada indicador é o `totalItems`
  * de uma listagem paginada em 1 item — barato no servidor e sem inventar rota.

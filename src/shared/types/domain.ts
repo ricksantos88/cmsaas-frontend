@@ -53,10 +53,61 @@ export interface LoginResponse {
   user: UserInfo
 }
 
+/** `POST /auth/register-church` — Onboarding self-service (ADR-008, ADR-009). */
+export interface RegisterChurchRequest {
+  churchName: string
+  denomination?: Denomination | null
+  adminName: string
+  adminEmail: string
+  adminPassword: string
+  adminRole?: 'PASTOR_PRESIDENT' | 'PASTOR_AUXILIARY' | 'ADMIN_CHURCH'
+  phone?: string | null
+  address?: Address | null
+  isPastor?: boolean
+}
+
+/** `GET /auth/my-churches` — Congregações vinculadas ao usuário logado (ADR-009). */
+export interface MyChurchResponse {
+  churchId: string
+  churchName: string
+  roles: Role[]
+  isCurrent: boolean
+}
+
+/** `POST /auth/switch-church` — Alternar congregação ativa (ADR-009). */
+export interface SwitchChurchRequest {
+  churchId: string
+}
+
 export interface TokenResponse {
   accessToken: string
   tokenType: string
   expiresIn: number
+}
+
+/** `POST /users/invites` — Convidar operador para a igreja (ADR-006). */
+export interface InviteUserRequest {
+  email: string
+  name: string
+  roles: Role[]
+}
+
+export interface UserInviteResponse {
+  id: string
+  churchId: string
+  email: string
+  name: string
+  roles: Role[]
+  token: string
+  expiresAt: IsoInstant
+  createdAt: IsoInstant
+}
+
+/** `POST /auth/accept-invite` — Ativação por código de 4 dígitos (ADR-006). */
+export interface AcceptInviteRequest {
+  email: string
+  token: string
+  password: string
 }
 
 // ── church ───────────────────────────────────────────────────────────────────
@@ -132,6 +183,8 @@ export interface Pastor {
   contactVisibility: ContactVisibility
   specializations: string[]
   workSchedule: WorkSchedule | null
+  hasUser?: boolean
+  userId?: Uuid | null
   createdAt: IsoInstant
   updatedAt: IsoInstant
 }
@@ -144,6 +197,8 @@ export interface PastorSummary {
   position: string | null
   status: PastorStatus
   profileImage: string | null
+  hasUser?: boolean
+  userId?: Uuid | null
 }
 
 // ── member ───────────────────────────────────────────────────────────────────
@@ -175,6 +230,8 @@ export interface Member {
   profession: string | null
   company: string | null
   notes: string | null
+  hasUser?: boolean
+  userId?: Uuid | null
   createdAt: IsoInstant
   updatedAt: IsoInstant
 }
@@ -189,6 +246,8 @@ export interface MemberSummary {
   baptized: boolean
   membershipDate: IsoDate | null
   profileImage: string | null
+  hasUser?: boolean
+  userId?: Uuid | null
 }
 
 export interface CreateMemberRequest {

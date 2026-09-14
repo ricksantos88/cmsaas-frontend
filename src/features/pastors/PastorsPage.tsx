@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
 import { useDeletePastor, usePastor, usePastors } from './pastors.queries'
 import { PastorFormDialog } from './PastorFormDialog'
 import type { PastorFilters } from './pastors.api'
 import { useSession } from '@/features/auth/useSession'
+import { InviteUserDialog } from '@/features/users/InviteUserDialog'
 import { useListFilters } from '@/shared/hooks/use-list-filters'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -39,6 +40,12 @@ export function PastorsPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | undefined>()
   const [pendingDelete, setPendingDelete] = useState<PastorSummary | null>(null)
+  const [invitingEntity, setInvitingEntity] = useState<{
+    name: string
+    email: string
+    isPastor?: boolean
+    currentRole?: PastorRole
+  } | null>(null)
 
   const filters: PastorFilters = {
     page,
@@ -48,6 +55,7 @@ export function PastorsPage() {
   }
 
   const query = usePastors(filters)
+  const hasPresident = query.data?.data.some((p) => p.role === 'PASTOR_PRESIDENT') ?? false
   // O formulário precisa do pastor completo; a lista só traz o resumo.
   const editing = usePastor(editingId)
   const deletePastor = useDeletePastor()
@@ -147,9 +155,16 @@ export function PastorsPage() {
                   {data.data.map((pastor) => (
                     <TR key={pastor.id}>
                       <TD className="font-medium">
-                        <Link to={`/pastores/${pastor.id}`} className="hover:text-primary">
-                          {pastor.name}
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link to={`/pastores/${pastor.id}`} className="hover:text-primary">
+                            {pastor.name}
+                          </Link>
+                          {pastor.hasUser && (
+                            <Badge tone="info" className="text-[10px] py-0 px-1.5">
+                              Usuário
+                            </Badge>
+                          )}
+                        </div>
                       </TD>
                       <TD className="text-content-muted">{pastor.email}</TD>
                       <TD className="text-content-muted">{PASTOR_ROLE_LABELS[pastor.role]}</TD>
@@ -166,6 +181,21 @@ export function PastorsPage() {
                               <DropdownMenuItem onSelect={() => void navigate(`/pastores/${pastor.id}`)}>
                                 Ver detalhes
                               </DropdownMenuItem>
+                              {canWrite && !pastor.hasUser && pastor.email && (
+                                <DropdownMenuItem
+                                  onSelect={() =>
+                                    setInvitingEntity({
+                                      name: pastor.name,
+                                      email: pastor.email,
+                                      isPastor: true,
+                                      currentRole: pastor.role,
+                                    })
+                                  }
+                                >
+                                  <UserPlus aria-hidden />
+                                  Tornar usuário
+                                </DropdownMenuItem>
+                              )}
                               {canWrite && (
                                 <DropdownMenuItem onSelect={() => openEdit(pastor.id)}>
                                   <Pencil aria-hidden />
@@ -211,6 +241,13 @@ export function PastorsPage() {
         confirmLabel="Excluir"
         loading={deletePastor.isPending}
         onConfirm={() => void confirmDelete()}
+      />
+
+      <InviteUserDialog
+        open={invitingEntity !== null}
+        onOpenChange={(open) => !open && setInvitingEntity(null)}
+        hasPresident={hasPresident}
+        entity={invitingEntity}
       />
     </div>
   )

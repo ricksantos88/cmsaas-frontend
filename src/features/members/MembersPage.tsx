@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
 import { useDeleteMember, useMembers } from './members.queries'
 import type { MemberFilters } from './members.api'
 import { useSession } from '@/features/auth/useSession'
+import { InviteUserDialog } from '@/features/users/InviteUserDialog'
 import { useListFilters } from '@/shared/hooks/use-list-filters'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -38,6 +39,7 @@ export function MembersPage() {
   const navigate = useNavigate()
   const { get, page, setFilters, setPage, clear, hasFilters } = useListFilters()
   const [pendingDelete, setPendingDelete] = useState<MemberSummary | null>(null)
+  const [invitingEntity, setInvitingEntity] = useState<{ name: string; email: string } | null>(null)
 
   const filters: MemberFilters = {
     page,
@@ -142,9 +144,16 @@ export function MembersPage() {
                   {data.data.map((member) => (
                     <TR key={member.id}>
                       <TD className="font-medium">
-                        <Link to={`/membros/${member.id}`} className="hover:text-primary">
-                          {member.fullName}
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link to={`/membros/${member.id}`} className="hover:text-primary">
+                            {member.fullName}
+                          </Link>
+                          {member.hasUser && (
+                            <Badge tone="info" className="text-[10px] py-0 px-1.5">
+                              Usuário
+                            </Badge>
+                          )}
+                        </div>
                       </TD>
                       <TD className="text-content-muted">{member.email ?? member.phone ?? '—'}</TD>
                       <TD className="text-content-muted">{member.city ?? '—'}</TD>
@@ -162,6 +171,19 @@ export function MembersPage() {
                             <DropdownMenuItem onSelect={() => void navigate(`/membros/${member.id}`)}>
                               Ver detalhes
                             </DropdownMenuItem>
+                            {canWrite && !member.hasUser && member.email && (
+                              <DropdownMenuItem
+                                onSelect={() =>
+                                  setInvitingEntity({
+                                    name: member.fullName,
+                                    email: member.email!,
+                                  })
+                                }
+                              >
+                                <UserPlus aria-hidden />
+                                Tornar usuário
+                              </DropdownMenuItem>
+                            )}
                             {canWrite && (
                               <>
                                 <DropdownMenuItem
@@ -201,6 +223,12 @@ export function MembersPage() {
         confirmLabel="Excluir"
         loading={deleteMember.isPending}
         onConfirm={() => void confirmDelete()}
+      />
+
+      <InviteUserDialog
+        open={invitingEntity !== null}
+        onOpenChange={(open) => !open && setInvitingEntity(null)}
+        entity={invitingEntity}
       />
     </div>
   )

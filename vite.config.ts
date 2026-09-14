@@ -19,6 +19,42 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react/') || id.includes('react-dom/')) {
+              return 'vendor-react'
+            }
+            if (id.includes('react-router')) {
+              return 'vendor-router'
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'vendor-query'
+            }
+            if (
+              id.includes('@radix-ui') ||
+              id.includes('class-variance-authority') ||
+              id.includes('clsx') ||
+              id.includes('tailwind-merge')
+            ) {
+              return 'vendor-ui'
+            }
+            if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+              return 'vendor-forms'
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons'
+            }
+            if (id.includes('axios')) {
+              return 'vendor-http'
+            }
+          }
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

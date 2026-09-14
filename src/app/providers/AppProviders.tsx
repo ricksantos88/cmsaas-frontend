@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { createQueryClient } from '@/shared/api/query-client'
 import { useSessionStore } from '@/features/auth/session.store'
+import { notifySuccess } from '@/shared/ui/toast'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(createQueryClient)
@@ -11,6 +12,16 @@ export function AppProviders({ children }: { children: ReactNode }) {
   // Boot: decide entre sessão restaurada e login antes de renderizar rota privada.
   useEffect(() => {
     void restore()
+
+    try {
+      const flashToast = sessionStorage.getItem('cmsaas.switchChurchToast')
+      if (flashToast) {
+        sessionStorage.removeItem('cmsaas.switchChurchToast')
+        notifySuccess(flashToast)
+      }
+    } catch {
+      /* storage bloqueado/indisponível */
+    }
   }, [restore])
 
   return (

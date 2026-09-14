@@ -114,4 +114,23 @@ describe('sessão do console', () => {
 
     expect(useSessionStore.getState().status).toBe('anonymous')
   })
+
+  it('alterna para outra congregação via switchChurch (ADR-009)', async () => {
+    server.use(
+      http.post('*/api/v1/auth/switch-church', async ({ request }) => {
+        const body = (await request.json()) as { churchId: string }
+        return HttpResponse.json({
+          ...fakeSession,
+          accessToken: 'new-tenant-token',
+          user: { ...fakeSession.user, churchId: body.churchId },
+        })
+      }),
+    )
+
+    await useSessionStore.getState().switchChurch('church-2')
+
+    expect(useSessionStore.getState().user?.churchId).toBe('church-2')
+    expect(tokenStore.getAccessToken()).toBe('new-tenant-token')
+  })
 })
+

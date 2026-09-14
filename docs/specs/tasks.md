@@ -82,6 +82,11 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 - [x] Edição de metadados do documento (`PUT /documents/{id}`)
 - [x] Nome da igreja do usuário no topo do menu
 - [ ] Consumir `GET /documents/categories` em vez dos rótulos locais
+- [x] **Home pública** (`/`) com botões para Login e Registro ([ADR-008](../adr/0008-public-home-and-church-onboarding.md))
+- [x] **Onboarding self-service de igreja** (`/registro`) via `POST /auth/register-church` ([ADR-008](../adr/0008-public-home-and-church-onboarding.md))
+- [x] **Suporte a múltiplas congregações** (`my-churches` e `switch-church`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
+- [x] **Seletor de congregação (ChurchSwitcher)** na Topbar com purga de cache (`queryClient.clear()`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
+- [x] **Atualizar onboarding (`/registro`)** com seleção de `adminRole` e novos tratamentos de erro ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
 
 ## ⏳ Fase 8 — Qualidade e operação
 
@@ -90,7 +95,9 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 - [ ] Teste de cada listagem (dados, erro, vazio) e de cada formulário (validação)
 - [ ] E2E do fluxo crítico: login → cadastrar membro → adicionar à célula → check-in
 - [x] Divisão do bundle por rota (`lazy` no router) — inicial 562 kB, telas de 3–13 kB
-- [ ] Separar o vendor em pedaços para melhorar o cache entre versões
+- [x] Desacoplamento estrito de features e extração de options compartilhadas ([ADR-006](../adr/0006-feature-decoupling-and-reference-data.md))
+- [x] Mover painel (`DashboardPage`) para `pages/` ([ADR-006](../adr/0006-feature-decoupling-and-reference-data.md))
+- [x] Separar o vendor em pedaços para melhorar o cache entre versões ([ADR-007](../adr/0007-vendor-chunking-and-bundle-optimization.md))
 - [ ] Pipeline: `npm run check` + build em CI
 - [ ] Dockerfile + Nginx com CSP e cabeçalhos de segurança
 - [ ] Revisão de acessibilidade com leitor de tela
@@ -99,5 +106,5 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 
 - [ ] Refresh token em cookie `httpOnly` (elimina o risco de XSS da ADR-004)
 - [ ] Endpoint de dashboard agregado (hoje o painel soma `totalItems`)
-- [ ] Cadastro/convite de usuários e vínculo usuário↔membro
+- [x] Cadastro/convite de usuários e vínculo usuário↔membro
 - [ ] Rotação de refresh no `/refresh` (débito aberto no ROADMAP do backend)

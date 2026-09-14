@@ -13,7 +13,37 @@ import { NotFoundPage } from '@/pages/NotFoundPage'
  * síncronos porque são o caminho de todo mundo.
  */
 export const router = createBrowserRouter([
+  {
+    path: '/',
+    lazy: async () => ({
+      Component: (await import('@/pages/RootRoute')).RootRoute,
+    }),
+  },
+  {
+    path: '/home',
+    lazy: async () => ({
+      Component: (await import('@/pages/HomePage')).HomePage,
+    }),
+  },
   { path: '/login', element: <LoginPage /> },
+  {
+    path: '/primeiro-acesso',
+    lazy: async () => ({
+      Component: (await import('@/features/auth/FirstAccessPage')).FirstAccessPage,
+    }),
+  },
+  {
+    path: '/aceitar-convite',
+    lazy: async () => ({
+      Component: (await import('@/features/auth/FirstAccessPage')).FirstAccessPage,
+    }),
+  },
+  {
+    path: '/registro',
+    lazy: async () => ({
+      Component: (await import('@/features/auth/RegisterChurchPage')).RegisterChurchPage,
+    }),
+  },
   {
     element: <RequireAuth />,
     children: [
@@ -21,9 +51,9 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         children: [
           {
-            index: true,
+            path: 'painel',
             lazy: async () => ({
-              Component: (await import('@/features/dashboard/DashboardPage')).DashboardPage,
+              Component: (await import('@/pages/DashboardPage')).DashboardPage,
             }),
           },
 

@@ -45,6 +45,15 @@ export function DropdownMenuSeparator() {
   return <Menu.Separator className="my-1 h-px bg-border-subtle" />
 }
 
+export function DropdownMenuLabel({ className, ...props }: ComponentProps<typeof Menu.Label>) {
+  return (
+    <Menu.Label
+      className={cn('px-2.5 py-1.5 text-xs font-semibold text-content-muted', className)}
+      {...props}
+    />
+  )
+}
+
 /** Botão "⋯" das linhas de tabela. */
 export function RowActionsTrigger({ label = 'Ações' }: { label?: string }) {
   return (

@@ -11,8 +11,7 @@ import {
   useUndoAttendance,
   useUpdateScale,
 } from './schedules.queries'
-import { useMemberOptions } from '@/features/members/members.queries'
-import { useMusicianOptions } from '@/features/musicians/musicians.queries'
+import { useMemberOptions, useMusicianOptions } from '@/shared/queries/options.queries'
 import { useSession } from '@/features/auth/useSession'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { Church, Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useSessionStore } from './session.store'
@@ -91,6 +91,21 @@ export function LoginPage() {
             {isSubmitting && <Loader2 className="animate-spin" aria-hidden />}
             Entrar
           </Button>
+
+          <div className="space-y-2 text-center text-sm text-content-muted">
+            <p>
+              Primeiro acesso?{' '}
+              <Link to="/primeiro-acesso" className="font-medium text-primary hover:underline">
+                Ative sua conta com seu código
+              </Link>
+            </p>
+            <p>
+              Ainda não cadastrou sua igreja?{' '}
+              <Link to="/registro" className="font-medium text-primary hover:underline">
+                Cadastre-se aqui
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </main>

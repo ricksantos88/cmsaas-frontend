@@ -18,6 +18,10 @@ usa, com que role, e onde está o código do cliente.
 | POST | `/api/v1/auth/change-password` | Minha conta → Segurança (encerra a sessão depois) |
 | POST | `/api/v1/auth/forgot-password` | ⏳ recuperação de senha (Fase 7) |
 | POST | `/api/v1/auth/reset-password` | ⏳ recuperação de senha (Fase 7) |
+| POST | `/api/v1/auth/register-church` | Onboarding self-service de igreja e pastor presidente (ADR-008, ADR-009) |
+| POST | `/api/v1/auth/accept-invite` | Aceite de convite de operador com definição de senha |
+| GET | `/api/v1/auth/my-churches` | Listar congregações vinculadas ao usuário logado (ADR-009) |
+| POST | `/api/v1/auth/switch-church` | Alternar congregação ativa e emitir novos tokens (ADR-009) |
 
 ## Church — `features/church/church.api.ts`
 

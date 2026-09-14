@@ -114,5 +114,9 @@ const MESSAGES: Record<string, string> = {
   SCHEDULE_ACCESS_DENIED: 'Você não tem acesso a este evento.',
   SERMON_ACCESS_DENIED: 'Você não tem acesso a este sermão.',
   NOTIFICATION_SEND_DENIED: 'Você não pode enviar notificações.',
+  USER_NOT_ELIGIBLE_FOR_MULTI_CHURCH:
+    'Usuário já cadastrado com perfil local não elegível para gerenciar múltiplas igrejas.',
+  INVALID_CREDENTIALS: 'A senha informada não confere com a conta existente.',
+  NOT_MEMBER_OF_CHURCH: 'Você não possui vínculo com a congregação selecionada.',
   NETWORK_ERROR: 'Não foi possível falar com o servidor.',
 }

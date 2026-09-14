@@ -12,6 +12,11 @@ Decisões arquiteturais do console web. Mesmo formato do backend
 | [0003](./0003-design-system-and-layout.md) | Design system, tokens e modelo de layout | Accepted |
 | [0004](./0004-session-rbac-and-tenant.md) | Sessão, RBAC no cliente e confiança no tenant | Accepted |
 | [0005](./0005-admin-only-web-channel.md) | Web é canal exclusivamente administrativo | Accepted |
+| [0006](./0006-feature-decoupling-and-reference-data.md) | Desacoplamento entre features e dados de referência | Accepted |
+| [0007](./0007-vendor-chunking-and-bundle-optimization.md) | Estratégia de chunking de vendor e otimização de bundle | Accepted |
+| [0008](./0008-public-home-and-church-onboarding.md) | Home pública e onboarding self-service de igreja | Accepted |
+| [0009](./0009-multi-church-memberships-and-tenant-switcher.md) | Suporte a múltiplas congregações e seletor de tenant | Accepted |
+| [0010](./0010-pastor-president-user-provisioning.md) | Atribuição de Pastor Presidente no provisionamento de usuário | Accepted |
 
 ## Quando criar uma ADR
 
