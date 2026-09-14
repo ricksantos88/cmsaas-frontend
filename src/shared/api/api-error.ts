@@ -1,4 +1,5 @@
 import type { ApiErrorBody, FieldValidationError } from '@/shared/types/api'
+import { humanizeValidationMessage } from '@/shared/lib/validation-messages'
 
 /**
  * Erro de API já traduzido. Todo componente trata ESTE tipo — `AxiosError` não
@@ -66,16 +67,57 @@ function isApiErrorBody(body: unknown): body is ApiErrorBody {
 /** Converte a resposta de erro do backend (ADR-004 C3) em `ApiError`. */
 export function toApiError(status: number, body: unknown): ApiError {
   if (!isApiErrorBody(body)) {
+    const bodyRecord =
+      typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : null
+    if (bodyRecord && typeof bodyRecord.message === 'string' && bodyRecord.message.trim() !== '') {
+      const message = bodyRecord.message
+      const code = typeof bodyRecord.error === 'string' ? bodyRecord.error : 'UNEXPECTED_ERROR'
+      return new ApiError(status, code, message)
+    }
     return new ApiError(status, 'UNEXPECTED_ERROR', FALLBACK_MESSAGES[status] ?? 'Erro inesperado.')
   }
 
   const { error, traceId } = body
+  const rawFieldErrors = isFieldErrors(error.details) ? error.details : []
+  let fieldErrors: FieldValidationError[] = []
+
+  // Preserva e humaniza mensagem de negócio do backend para erros de validação
+  let message = error.message
+  if (error.code === 'VALIDATION_ERROR') {
+    const isGenericBackendMsg =
+      !error.message ||
+      error.message === 'A requisição contém dados inválidos' ||
+      error.message === 'inválido'
+
+    if (isGenericBackendMsg) {
+      message = MESSAGES.VALIDATION_ERROR
+    } else {
+      const humanized = humanizeValidationMessage(error.message)
+      message = humanized.message
+
+      // Se não havia lista de detalhes, mas a mensagem do erro indicou um campo específico:
+      if (rawFieldErrors.length === 0 && humanized.field) {
+        fieldErrors.push({ field: humanized.field, message: humanized.message })
+      }
+    }
+
+    if (rawFieldErrors.length > 0) {
+      fieldErrors = rawFieldErrors.map((fe) => {
+        const humanized = humanizeValidationMessage(fe.message, fe.field)
+        return { field: fe.field, message: humanized.message }
+      })
+    }
+  } else {
+    message = MESSAGES[error.code] ?? humanizeValidationMessage(error.message).message
+    fieldErrors = rawFieldErrors
+  }
+
   return new ApiError(
     status,
     error.code,
-    MESSAGES[error.code] ?? error.message,
+    message,
     traceId ?? null,
-    isFieldErrors(error.details) ? error.details : [],
+    fieldErrors,
   )
 }
 
@@ -97,6 +139,14 @@ const MESSAGES: Record<string, string> = {
   RESOURCE_NOT_FOUND: 'Registro não encontrado.',
   RESOURCE_ALREADY_EXISTS: 'Já existe um registro com estes dados.',
   EMAIL_ALREADY_EXISTS: 'Este e-mail já está em uso por outra conta.',
+  USER_ALREADY_EXISTS: 'Já existe um usuário cadastrado com este e-mail.',
+  INVITE_ALREADY_EXISTS: 'Já existe um convite ativo e pendente para este e-mail.',
+  RECORD_CONFIDENTIAL: 'Este atendimento pastoral é confidencial e seu acesso é restrito.',
+  TENANT_REQUIRED: 'Igreja não identificada na sessão.',
+  MALFORMED_REQUEST: 'Corpo da requisição ausente ou malformado.',
+  INVALID_PARAMETER: 'Parâmetro informado inválido.',
+  MISSING_PARAMETER: 'Parâmetro obrigatório ausente.',
+  METHOD_NOT_ALLOWED: 'Operação não permitida neste recurso.',
   RESOURCE_CONFLICT: 'A operação conflita com o estado atual do registro.',
   TOO_MANY_REQUESTS: 'Muitas tentativas. Aguarde alguns minutos.',
   FILE_TOO_LARGE: 'Arquivo acima do tamanho permitido.',

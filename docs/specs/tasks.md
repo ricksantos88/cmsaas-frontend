@@ -87,6 +87,7 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 - [x] **Suporte a múltiplas congregações** (`my-churches` e `switch-church`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
 - [x] **Seletor de congregação (ChurchSwitcher)** na Topbar com purga de cache (`queryClient.clear()`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
 - [x] **Atualizar onboarding (`/registro`)** com seleção de `adminRole` e novos tratamentos de erro ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
+- [x] **Sistema de cores sóbrias eclesiásticas (Sálvia & Terracota)** ([ADR-011](../adr/0011-ecclesiastical-color-system.md))
 
 ## ⏳ Fase 8 — Qualidade e operação
 

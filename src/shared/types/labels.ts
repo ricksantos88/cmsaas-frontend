@@ -27,6 +27,7 @@ import type {
   PastorStatus,
   ScaleStatus,
   ScheduleStatus,
+  PastoralRecordType,
   ScheduleType,
   ScheduleVisibility,
   SermonTopic,
@@ -36,6 +37,21 @@ import type {
   VoiceType,
 } from './domain'
 import type { DayOfWeek } from './api'
+
+export const MONTH_LABELS: Record<number, string> = {
+  1: 'Janeiro',
+  2: 'Fevereiro',
+  3: 'Março',
+  4: 'Abril',
+  5: 'Maio',
+  6: 'Junho',
+  7: 'Julho',
+  8: 'Agosto',
+  9: 'Setembro',
+  10: 'Outubro',
+  11: 'Novembro',
+  12: 'Dezembro',
+}
 
 export const DAY_LABELS: Record<DayOfWeek, string> = {
   MONDAY: 'Segunda-feira',
@@ -358,3 +374,26 @@ export const NOTIFICATION_CHANNEL_LABELS: Record<NotificationChannel, string> = 
   PUSH: 'Push (app)',
   EMAIL: 'E-mail',
 }
+
+// ── cuidado pastoral ──────────────────────────────────────────────────────────
+
+export const PASTORAL_RECORD_TYPE_LABELS: Record<PastoralRecordType, string> = {
+  VISIT: 'Visita pastoral',
+  COUNSELING: 'Aconselhamento',
+  HOSPITAL_VISIT: 'Visita hospitalar',
+  PHONE_CALL: 'Contato telefônico',
+  PRAYER_REQUEST: 'Pedido de oração',
+  DISCIPLINE: 'Disciplina',
+  OTHER: 'Outro',
+}
+
+export const PASTORAL_RECORD_TYPE_TONES: Record<PastoralRecordType, BadgeTone> = {
+  VISIT: 'info',
+  COUNSELING: 'accent',
+  HOSPITAL_VISIT: 'warning',
+  PHONE_CALL: 'neutral',
+  PRAYER_REQUEST: 'success',
+  DISCIPLINE: 'danger',
+  OTHER: 'neutral',
+}
+

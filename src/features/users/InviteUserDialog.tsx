@@ -90,8 +90,7 @@ export function InviteUserDialog({ open, onOpenChange, hasPresident = false, ent
       setResult(resp)
       notifySuccess('Acesso gerado com sucesso!')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erro ao gerar acesso'
-      notifyError(msg)
+      notifyError(err, 'Erro ao gerar acesso.')
     }
   }
 

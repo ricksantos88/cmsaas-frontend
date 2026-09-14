@@ -66,7 +66,7 @@ export function FilterBar({
   )
 }
 
-interface EnumSelectProps<T extends string> {
+interface EnumSelectProps<T extends string | number> {
   label: string
   value: T | undefined
   options: Record<T, string>
@@ -76,7 +76,7 @@ interface EnumSelectProps<T extends string> {
 }
 
 /** Select de enum da API já traduzido — nunca exiba o valor cru. */
-export function EnumSelect<T extends string>({
+export function EnumSelect<T extends string | number>({
   label,
   value,
   options,
@@ -88,8 +88,17 @@ export function EnumSelect<T extends string>({
     <Select
       className={className}
       aria-label={label}
-      value={value ?? ''}
-      onChange={(event) => onChange((event.target.value || undefined) as T | undefined)}
+      value={value !== undefined ? String(value) : ''}
+      onChange={(event) => {
+        const raw = event.target.value
+        if (!raw) {
+          onChange(undefined)
+          return
+        }
+        const num = Number(raw)
+        const parsed = !Number.isNaN(num) && num in options ? num : raw
+        onChange(parsed as T)
+      }}
     >
       <option value="">{placeholder}</option>
       {Object.entries(options).map(([key, text]) => (

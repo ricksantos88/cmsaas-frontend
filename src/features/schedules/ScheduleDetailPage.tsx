@@ -1,6 +1,17 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router'
-import { ArrowLeft, Loader2, Music, Pencil, UserCheck, UserMinus, X } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router'
+import {
+  ArrowLeft,
+  Calendar,
+  Check,
+  Loader2,
+  MessageCircle,
+  Music,
+  Pencil,
+  UserCheck,
+  UserMinus,
+  X,
+} from 'lucide-react'
 import {
   useAttendance,
   useRegisterAttendance,
@@ -8,6 +19,7 @@ import {
   useScale,
   useScaleMusician,
   useSchedule,
+  useScheduleAbsentees,
   useUndoAttendance,
   useUpdateScale,
 } from './schedules.queries'
@@ -25,7 +37,8 @@ import { CardSkeleton } from '@/shared/ui/skeleton'
 import { EmptyState } from '@/shared/ui/states'
 import { Checkbox } from '@/shared/ui/textarea'
 import { notifyError, notifySuccess } from '@/shared/ui/toast'
-import { formatDateTime } from '@/shared/lib/format'
+import { buildWhatsAppLink, formatDate, formatDateTime } from '@/shared/lib/format'
+import { cn } from '@/shared/lib/cn'
 import {
   INSTRUMENT_LABELS,
   SCALE_STATUS_LABELS,
@@ -129,8 +142,12 @@ function AttendanceCard({
   scheduleId: string
   onOpenCheckIn: () => void
 }) {
-  const query = useAttendance(scheduleId)
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState<'attended' | 'absent'>('attended')
+  const attendanceQuery = useAttendance(scheduleId)
+  const absenteesQuery = useScheduleAbsentees(scheduleId)
   const undoAttendance = useUndoAttendance(scheduleId)
+  const registerAttendance = useRegisterAttendance(scheduleId)
 
   async function undo(memberId: string, memberName: string) {
     try {
@@ -141,58 +158,214 @@ function AttendanceCard({
     }
   }
 
+  async function handleManualCheckIn(memberId: string, memberName: string) {
+    try {
+      await registerAttendance.mutateAsync([memberId])
+      notifySuccess(`Presença de ${memberName} registrada.`)
+    } catch (error) {
+      notifyError(error)
+    }
+  }
+
+  const attendedCount =
+    attendanceQuery.data?.summary?.totalAttended ??
+    attendanceQuery.data?.pagination?.totalItems ??
+    attendanceQuery.data?.data?.length ??
+    0
+  const absenteesCount =
+    absenteesQuery.data?.pagination?.totalItems ??
+    absenteesQuery.data?.summary?.totalAbsentees ??
+    absenteesQuery.data?.data?.length ??
+    0
+
   return (
     <Card>
-      <CardHeader className="flex items-center justify-between gap-4">
-        <CardTitle>
-          Presença
-          {query.data && (
-            <span className="ml-2 text-sm font-normal text-content-muted">
-              {query.data.summary.totalAttended}
-              {query.data.summary.attendancePercentage !== null &&
-                ` · ${query.data.summary.attendancePercentage}% da capacidade`}
-            </span>
-          )}
-        </CardTitle>
-        <Button size="sm" onClick={onOpenCheckIn}>
-          <UserCheck aria-hidden />
-          Registrar presença
-        </Button>
+      <CardHeader className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="inline-flex rounded-lg border border-border-subtle bg-surface-subtle p-1">
+            <button
+              type="button"
+              className={cn(
+                'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                activeTab === 'attended'
+                  ? 'bg-surface text-content shadow-sm'
+                  : 'text-content-muted hover:text-content',
+              )}
+              onClick={() => setActiveTab('attended')}
+            >
+              Presentes ({attendedCount})
+            </button>
+            <button
+              type="button"
+              className={cn(
+                'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                activeTab === 'absent'
+                  ? 'bg-surface text-content shadow-sm'
+                  : 'text-content-muted hover:text-content',
+              )}
+              onClick={() => setActiveTab('absent')}
+            >
+              Ausentes ({absenteesCount})
+            </button>
+          </div>
+
+          {activeTab === 'attended' &&
+            attendanceQuery.data?.summary?.attendancePercentage !== null &&
+            attendanceQuery.data?.summary?.attendancePercentage !== undefined && (
+              <span className="hidden text-xs text-content-muted sm:inline">
+                {attendanceQuery.data.summary.attendancePercentage}% da capacidade
+              </span>
+            )}
+        </div>
+
+        {activeTab === 'attended' && (
+          <Button size="sm" onClick={onOpenCheckIn}>
+            <UserCheck aria-hidden />
+            Registrar presença
+          </Button>
+        )}
       </CardHeader>
 
-      <QueryStates
-        query={query}
-        skeleton={<CardSkeleton rows={3} />}
-        isEmpty={(data) => data.data.length === 0}
-        empty={
-          <EmptyState
-            title="Nenhuma presença registrada"
-            description="Registre o check-in dos participantes durante ou depois do evento."
-          />
-        }
-      >
-        {(attendance) => (
-          <ul className="divide-y divide-border-subtle">
-            {attendance.data.map((entry) => (
-              <li key={entry.id} className="flex items-center justify-between gap-4 px-5 py-3">
-                <div>
-                  <p className="text-sm font-medium text-content">{entry.memberName ?? '—'}</p>
-                  <p className="text-xs text-content-muted">{formatDateTime(entry.checkInTime)}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  aria-label={`Desfazer presença de ${entry.memberName ?? 'membro'}`}
-                  onClick={() => void undo(entry.memberId, entry.memberName ?? 'membro')}
-                >
-                  <UserMinus aria-hidden />
-                  Desfazer
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </QueryStates>
+      {activeTab === 'attended' ? (
+        <QueryStates
+          query={attendanceQuery}
+          skeleton={<CardSkeleton rows={3} />}
+          isEmpty={(data) => data.data.length === 0}
+          empty={
+            <EmptyState
+              title="Nenhuma presença registrada"
+              description="Registre o check-in dos participantes durante ou depois do evento."
+            />
+          }
+        >
+          {(attendance) => (
+            <ul className="divide-y divide-border-subtle">
+              {attendance.data.map((entry) => (
+                <li key={entry.id} className="flex items-center justify-between gap-4 px-5 py-3">
+                  <div>
+                    <p className="text-sm font-medium text-content">{entry.memberName ?? '—'}</p>
+                    <p className="text-xs text-content-muted">{formatDateTime(entry.checkInTime)}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label={`Desfazer presença de ${entry.memberName ?? 'membro'}`}
+                    onClick={() => void undo(entry.memberId, entry.memberName ?? 'membro')}
+                  >
+                    <UserMinus aria-hidden />
+                    Desfazer
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </QueryStates>
+      ) : (
+        <QueryStates
+          query={absenteesQuery}
+          skeleton={<CardSkeleton rows={3} />}
+          isEmpty={(data) => data.data.length === 0}
+          empty={
+            <EmptyState
+              title="Nenhum membro ausente"
+              description="Todos os membros esperados compareceram ou não constam faltosos para este evento."
+            />
+          }
+        >
+          {(absentees) => (
+            <ul className="divide-y divide-border-subtle">
+              {absentees.data.map((absentee) => {
+                const displayName = absentee.fullName || absentee.memberName || 'Membro'
+                const contactPhone = absentee.whatsapp || absentee.phone
+                const absenteeMessage = `A paz do Senhor, ${displayName}! Sentimos sua falta no culto de hoje. Esperamos que esteja tudo bem, se precisar de oração ou apoio pastoral conte conosco!`
+
+                return (
+                  <li
+                    key={absentee.memberId}
+                    className="flex flex-wrap items-center justify-between gap-4 px-5 py-3"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to={`/membros/${absentee.memberId}`}
+                          className="text-sm font-medium text-content hover:text-primary"
+                        >
+                          {displayName}
+                        </Link>
+                        {absentee.cellName && (
+                          <Badge tone="neutral" className="text-[10px] py-0 px-1.5">
+                            {absentee.cellName}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-content-muted">
+                        <span>Telefone: {contactPhone ?? '—'}</span>
+                        <span>·</span>
+                        <span>
+                          Última presença:{' '}
+                          {absentee.lastAttendanceDate
+                            ? formatDate(absentee.lastAttendanceDate)
+                            : 'Nunca'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      {contactPhone && (
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Enviar mensagem no WhatsApp para ${displayName}`}
+                          title="Enviar mensagem acolhedora pelo WhatsApp"
+                        >
+                          <a
+                            href={buildWhatsAppLink(contactPhone, absenteeMessage)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <MessageCircle aria-hidden className="size-4 text-success" />
+                            <span className="hidden sm:inline">WhatsApp</span>
+                          </a>
+                        </Button>
+                      )}
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        aria-label={`Agendar visita para ${displayName}`}
+                        title="Agendar visita pastoral"
+                        onClick={() =>
+                          void navigate(
+                            `/agenda/novo?type=PASTOR_VISIT&memberId=${absentee.memberId}`,
+                          )
+                        }
+                      >
+                        <Calendar aria-hidden className="size-4" />
+                        <span className="hidden sm:inline">Agendar Visita</span>
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={registerAttendance.isPending}
+                        aria-label={`Fazer check-in manual de ${displayName}`}
+                        title="Marcar presença agora"
+                        onClick={() =>
+                          void handleManualCheckIn(absentee.memberId, displayName)
+                        }
+                      >
+                        <Check aria-hidden className="size-4 text-primary" />
+                        <span className="hidden sm:inline">Check-in Manual</span>
+                      </Button>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </QueryStates>
+      )}
     </Card>
   )
 }

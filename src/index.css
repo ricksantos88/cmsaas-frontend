@@ -4,26 +4,38 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Tokens do design system. Toda cor de tela sai daqui: componente não escreve
- * `bg-slate-800` direto, escreve `bg-surface` / `text-muted` / `bg-primary`.
+ * Tokens do design system — Tema Sálvia Nobre & Terracota Cálido (Eclesiástico).
+ * Toda cor de tela sai daqui: componente não escreve `bg-slate-800` direto,
+ * escreve `bg-surface` / `text-content-muted` / `bg-primary` / `bg-accent`.
  * Trocar a identidade visual da igreja = trocar este bloco.
  */
 @theme {
-  --color-canvas: oklch(0.985 0.002 250);
+  --color-canvas: oklch(0.982 0.006 140);
   --color-surface: oklch(1 0 0);
-  --color-surface-muted: oklch(0.97 0.003 250);
-  --color-border-subtle: oklch(0.91 0.005 250);
+  --color-surface-muted: oklch(0.965 0.008 140);
+  --color-border-subtle: oklch(0.89 0.012 140);
 
-  --color-content: oklch(0.21 0.02 260);
-  --color-content-muted: oklch(0.53 0.02 260);
+  --color-content: oklch(0.20 0.025 145);
+  --color-content-muted: oklch(0.48 0.025 145);
 
-  --color-primary: oklch(0.48 0.15 258);
-  --color-primary-hover: oklch(0.42 0.15 258);
+  --color-primary: oklch(0.38 0.085 145);
+  --color-primary-hover: oklch(0.31 0.085 145);
   --color-primary-foreground: oklch(0.99 0 0);
 
-  --color-success: oklch(0.62 0.15 150);
-  --color-warning: oklch(0.75 0.15 75);
-  --color-danger: oklch(0.58 0.21 25);
+  --color-accent: oklch(0.58 0.16 48);
+  --color-accent-hover: oklch(0.50 0.16 48);
+  --color-accent-foreground: oklch(0.99 0 0);
+
+  /* Tokens da Sidebar Eclesiástica Nobre (Contrastante como no protótipo) */
+  --color-sidebar: oklch(0.24 0.04 145);
+  --color-sidebar-foreground: oklch(0.96 0.01 140);
+  --color-sidebar-muted: oklch(0.72 0.02 145);
+  --color-sidebar-border: oklch(0.30 0.03 145);
+  --color-sidebar-accent: oklch(0.30 0.05 145);
+
+  --color-success: oklch(0.58 0.15 145);
+  --color-warning: oklch(0.68 0.15 58);
+  --color-danger: oklch(0.56 0.20 28);
   --color-danger-foreground: oklch(0.99 0 0);
 
   --radius-card: 0.75rem;
@@ -35,17 +47,27 @@
 
 @layer theme {
   .dark {
-    --color-canvas: oklch(0.18 0.015 260);
-    --color-surface: oklch(0.23 0.017 260);
-    --color-surface-muted: oklch(0.27 0.018 260);
-    --color-border-subtle: oklch(0.33 0.018 260);
+    --color-canvas: oklch(0.14 0.015 145);
+    --color-surface: oklch(0.19 0.018 145);
+    --color-surface-muted: oklch(0.23 0.020 145);
+    --color-border-subtle: oklch(0.29 0.020 145);
 
-    --color-content: oklch(0.96 0.005 260);
-    --color-content-muted: oklch(0.72 0.015 260);
+    --color-content: oklch(0.96 0.006 145);
+    --color-content-muted: oklch(0.70 0.020 145);
 
-    --color-primary: oklch(0.66 0.14 258);
-    --color-primary-hover: oklch(0.72 0.14 258);
-    --color-primary-foreground: oklch(0.18 0.015 260);
+    --color-primary: oklch(0.65 0.11 145);
+    --color-primary-hover: oklch(0.72 0.11 145);
+    --color-primary-foreground: oklch(0.14 0.015 145);
+
+    --color-accent: oklch(0.68 0.16 48);
+    --color-accent-hover: oklch(0.75 0.16 48);
+    --color-accent-foreground: oklch(0.14 0.015 145);
+
+    --color-sidebar: oklch(0.11 0.015 145);
+    --color-sidebar-foreground: oklch(0.96 0.006 145);
+    --color-sidebar-muted: oklch(0.65 0.02 145);
+    --color-sidebar-border: oklch(0.20 0.02 145);
+    --color-sidebar-accent: oklch(0.22 0.03 145);
   }
 }
 

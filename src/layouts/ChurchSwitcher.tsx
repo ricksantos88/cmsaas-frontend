@@ -44,8 +44,8 @@ export function ChurchSwitcher() {
   // Apenas 1 congregação vinculada: nome fixo (sem dropdown interativo).
   if (churches.length === 1) {
     return (
-      <div className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-medium text-content">
-        <Church className="size-4 text-primary" aria-hidden />
+      <div className="flex items-center gap-2 rounded-lg border border-border-subtle bg-surface-muted px-2.5 py-1.5 text-sm font-medium text-content shadow-xs">
+        <Church className="size-4 text-primary shrink-0" aria-hidden />
         <span className="truncate max-w-[180px] sm:max-w-xs">{currentChurch.churchName}</span>
       </div>
     )
@@ -103,7 +103,7 @@ function reloadPageForTenantSwitch() {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label="Alternar congregação"
-        className="flex items-center gap-2 rounded-lg border border-border-subtle bg-surface px-2.5 py-1.5 text-sm font-medium text-content hover:bg-surface-muted transition-colors max-w-[200px] sm:max-w-xs"
+        className="flex items-center gap-2 rounded-lg border border-border-subtle bg-surface-muted px-2.5 py-1.5 text-sm font-medium text-content hover:bg-surface transition-colors max-w-[220px] sm:max-w-xs shadow-xs"
       >
         <Church className="size-4 text-primary shrink-0" aria-hidden />
         <span className="truncate text-left">{currentChurch.churchName}</span>

@@ -241,13 +241,31 @@ export interface MemberSummary {
   fullName: string
   email: string | null
   phone: string | null
+  whatsapp?: string | null
   city: string | null
   status: MemberStatus
   baptized: boolean
   membershipDate: IsoDate | null
+  dateOfBirth?: IsoDate | null
+  birthMonth?: number | null
   profileImage: string | null
   hasUser?: boolean
   userId?: Uuid | null
+}
+
+/** Filtros de listagem de membros. */
+export interface MemberFilters {
+  page?: number
+  limit?: number
+  search?: string
+  status?: MemberStatus
+  baptized?: boolean
+  city?: string
+  fromDate?: IsoDate
+  toDate?: IsoDate
+  birthMonth?: number
+  sortBy?: string
+  sortOrder?: 'ASC' | 'DESC'
 }
 
 export interface CreateMemberRequest {
@@ -615,3 +633,65 @@ export interface InboxResponse {
     unreadCount: number
   }
 }
+
+// ── pastoral care ────────────────────────────────────────────────────────────
+
+export type PastoralRecordType =
+  | 'VISIT'
+  | 'COUNSELING'
+  | 'HOSPITAL_VISIT'
+  | 'PHONE_CALL'
+  | 'PRAYER_REQUEST'
+  | 'DISCIPLINE'
+  | 'OTHER'
+
+export interface PastoralCareRecord {
+  id: Uuid
+  churchId?: Uuid | null
+  memberId: Uuid
+  pastorId: Uuid
+  pastorName?: string | null
+  type: PastoralRecordType
+  date: IsoDate
+  subject: string
+  notes: string
+  confidential: boolean
+  createdAt: IsoInstant
+  updatedAt: IsoInstant
+}
+
+export interface CreatePastoralRecordRequest {
+  type: PastoralRecordType
+  date: IsoDate
+  subject: string
+  notes: string
+  confidential?: boolean
+}
+
+// ── absentees ────────────────────────────────────────────────────────────────
+
+export interface AbsenteeMember {
+  id?: string
+  memberId: string
+  fullName?: string
+  memberName?: string
+  phone?: string | null
+  whatsapp?: string | null
+  cellId?: string | null
+  cellName?: string | null
+  lastAttendanceDate?: IsoInstant | IsoDate | null
+}
+
+export interface AbsenteeListResponse {
+  data: AbsenteeMember[]
+  pagination: {
+    page: number
+    pageSize: number
+    totalItems: number
+    totalPages: number
+    hasNext: boolean
+    hasPrev: boolean
+  }
+  summary?: { totalAbsentees?: number }
+}
+

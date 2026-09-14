@@ -53,31 +53,35 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-sidebar flex-col border-r border-border-subtle bg-surface transition-transform lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-sidebar flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform lg:translate-x-0',
           menuOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="flex h-topbar items-center justify-between gap-2 border-b border-border-subtle px-4">
-          {/* A igreja do usuário é a identidade do console — não um seletor: o
-              tenant vem do token e não se troca sem novo login (ADR-004 R1). */}
-          <div className="min-w-0">
-            {loadingChurch ? (
-              <Skeleton className="h-4 w-32" />
-            ) : (
-              <>
-                <p className="truncate text-sm font-semibold tracking-tight text-content">
-                  {church.data?.name ?? 'CMSaaS'}
-                </p>
-                <p className="text-xs text-content-muted">
-                  {church.data ? 'Console administrativo' : 'Administração da plataforma'}
-                </p>
-              </>
-            )}
+        <div className="flex h-topbar items-center justify-between gap-2 border-b border-sidebar-border px-4">
+          {/* A igreja do usuário é a identidade do console com o selo eclesiástico */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-sm shrink-0">
+              ⛪
+            </div>
+            <div className="min-w-0">
+              {loadingChurch ? (
+                <Skeleton className="h-4 w-32 bg-sidebar-accent" />
+              ) : (
+                <>
+                  <p className="truncate text-sm font-semibold tracking-tight text-sidebar-foreground">
+                    {church.data?.name ?? 'CMSaaS'}
+                  </p>
+                  <p className="text-xs text-sidebar-muted">
+                    {church.data ? 'Console administrativo' : 'Administração da plataforma'}
+                  </p>
+                </>
+              )}
+            </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden text-sidebar-foreground hover:bg-sidebar-accent"
             aria-label="Fechar menu"
             onClick={() => setMenuOpen(false)}
           >
@@ -88,7 +92,7 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="Menu principal">
           {groups.map((group) => (
             <div key={group.title} className="space-y-1">
-              <p className="px-3 text-xs font-semibold tracking-wide text-content-muted uppercase">
+              <p className="px-3 text-xs font-semibold tracking-wide text-sidebar-muted uppercase">
                 {group.title}
               </p>
               {group.items.map((item) => (
@@ -101,8 +105,8 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
                     cn(
                       'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
                       isActive
-                        ? 'bg-primary/10 font-medium text-primary'
-                        : 'text-content-muted hover:bg-surface-muted hover:text-content',
+                        ? 'bg-primary text-primary-foreground font-semibold shadow-sm'
+                        : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground',
                     )
                   }
                 >
@@ -125,7 +129,7 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
       )}
 
       <div className="lg:pl-sidebar">
-        <header className="sticky top-0 z-20 flex h-topbar items-center gap-3 border-b border-border-subtle bg-surface/95 px-4 backdrop-blur">
+        <header className="sticky top-0 z-20 flex h-topbar items-center gap-3 border-b border-border-subtle bg-surface/95 px-4 backdrop-blur shadow-xs">
           <Button
             variant="ghost"
             size="icon"
@@ -143,7 +147,7 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
           <DropdownMenu>
             <DropdownMenuTrigger
               aria-label="Menu da conta"
-              className="ml-auto flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-surface-muted"
+              className="ml-auto flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-surface-muted transition-colors"
             >
               <span className="hidden text-right sm:block">
                 <span className="block text-sm font-medium text-content">{user?.name}</span>
@@ -151,7 +155,7 @@ export function AppShell({ children }: { children?: ReactNode } = {}) {
                   {roles.map((role) => ROLE_LABELS[role]).join(' · ')}
                 </span>
               </span>
-              <span className="grid size-9 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+              <span className="grid size-9 place-items-center rounded-full bg-accent text-accent-foreground text-xs font-bold shadow-sm">
                 {initials(user?.name ?? '')}
               </span>
             </DropdownMenuTrigger>

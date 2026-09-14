@@ -8,6 +8,8 @@ export const scheduleKeys = {
   calendar: (year: number, month: number) => [...scheduleKeys.all, 'calendar', year, month] as const,
   detail: (id: string) => [...scheduleKeys.all, 'detail', id] as const,
   attendance: (id: string) => [...scheduleKeys.all, 'attendance', id] as const,
+  absentees: (id: string, filters?: { page?: number; limit?: number; search?: string }) =>
+    [...scheduleKeys.all, 'absentees', id, filters] as const,
   scale: (id: string) => [...scheduleKeys.all, 'scale', id] as const,
 }
 
@@ -73,6 +75,17 @@ export function useUndoAttendance(id: string) {
   return useMutation({
     mutationFn: (memberId: string) => schedulesApi.undoAttendance(id, memberId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: scheduleKeys.all }),
+  })
+}
+
+export function useScheduleAbsentees(
+  id: string | undefined,
+  filters?: { page?: number; limit?: number; search?: string },
+) {
+  return useQuery({
+    queryKey: scheduleKeys.absentees(id ?? '', filters),
+    queryFn: () => schedulesApi.getAbsentees(id as string, filters),
+    enabled: Boolean(id),
   })
 }
 

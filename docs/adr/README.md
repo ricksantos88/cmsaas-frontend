@@ -17,6 +17,7 @@ Decisões arquiteturais do console web. Mesmo formato do backend
 | [0008](./0008-public-home-and-church-onboarding.md) | Home pública e onboarding self-service de igreja | Accepted |
 | [0009](./0009-multi-church-memberships-and-tenant-switcher.md) | Suporte a múltiplas congregações e seletor de tenant | Accepted |
 | [0010](./0010-pastor-president-user-provisioning.md) | Atribuição de Pastor Presidente no provisionamento de usuário | Accepted |
+| [0011](./0011-ecclesiastical-color-system.md) | Sistema de cores sóbrias eclesiásticas (Sálvia & Terracota) | Accepted |
 
 ## Quando criar uma ADR
 

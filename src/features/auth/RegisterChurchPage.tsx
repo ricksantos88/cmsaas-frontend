@@ -107,6 +107,15 @@ export function RegisterChurchPage() {
           )
           return
         }
+        if (error.fieldErrors.length > 0) {
+          const known = new Set(Object.keys(values))
+          for (const { field, message } of error.fieldErrors) {
+            const leaf = field.includes('.') ? field.split('.').pop() : field
+            if (leaf && (known.has(leaf) || leaf in values)) {
+              setError(leaf as keyof RegisterFormValues, { message })
+            }
+          }
+        }
         setFormError(error.message)
       } else {
         setFormError('Não foi possível realizar o cadastro. Tente novamente.')

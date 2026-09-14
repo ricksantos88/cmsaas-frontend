@@ -34,16 +34,43 @@ export function useApiForm<T extends FieldValues>({
       await onSubmit(values)
       onSuccess?.()
     } catch (error) {
-      if (error instanceof ApiError && error.isValidation) {
+      if (error instanceof ApiError && error.fieldErrors.length > 0) {
+        const currentValues = form.getValues()
+        const knownKeys = new Set(Object.keys(currentValues))
+        const unmappedErrors: string[] = []
+
         for (const { field, message } of error.fieldErrors) {
-          form.setError(field as Path<T>, { message })
+          if (knownKeys.has(field) || field in currentValues) {
+            form.setError(field as Path<T>, { message })
+          } else if (field.includes('.')) {
+            // Tenta a chave folha caso o formulário seja plano (ex.: 'address.zipCode' -> 'zipCode')
+            const leaf = field.split('.').pop()
+            if (leaf && (knownKeys.has(leaf) || leaf in currentValues)) {
+              form.setError(leaf as Path<T>, { message })
+            } else {
+              unmappedErrors.push(`${field}: ${message}`)
+            }
+          } else {
+            unmappedErrors.push(`${field}: ${message}`)
+          }
         }
-        // O campo pode não existir no formulário (validação de regra composta):
-        // nesse caso o toast é o único lugar onde a mensagem aparece.
-        const known = new Set(Object.keys(form.getValues()))
-        if (error.fieldErrors.some(({ field }) => !known.has(field))) notifyError(error)
+
+        if (unmappedErrors.length > 0) {
+          notifyError(
+            unmappedErrors.length === 1
+              ? unmappedErrors[0]
+              : `Erros de validação: ${unmappedErrors.join(', ')}`,
+          )
+        } else {
+          const friendlyMessage =
+            error.message && error.message !== 'A requisição contém dados inválidos'
+              ? error.message
+              : 'Confira os campos destacados.'
+          notifyError(friendlyMessage)
+        }
         return
       }
+
       notifyError(error)
     }
   })

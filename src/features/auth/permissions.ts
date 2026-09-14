@@ -24,6 +24,8 @@ export const PERMISSIONS = {
   'scale.write': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY', 'ADMIN_CHURCH', 'WORSHIP_LEADER'],
   'sermon.write': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY', 'ADMIN_CHURCH'],
   'notification.send': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY', 'ADMIN_CHURCH', 'WORSHIP_LEADER'],
+  'pastoralCare.read': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY'],
+  'pastoralCare.write': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY'],
 } as const satisfies Record<string, readonly Role[]>
 
 export type Permission = keyof typeof PERMISSIONS

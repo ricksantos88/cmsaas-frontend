@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams, useSearchParams } from 'react-router'
 import { z } from 'zod'
 import { useSaveSchedule, useSchedule } from './schedules.queries'
 import { usePastorOptions } from '@/shared/queries/options.queries'
@@ -46,8 +46,12 @@ type ScheduleFormValues = z.infer<typeof scheduleSchema>
 /** Evento tem muitos campos e seções: formulário em página, não em modal. */
 export function ScheduleFormPage() {
   const { id } = useParams<{ id: string }>()
+  const [searchParams] = useSearchParams()
   const query = useSchedule(id)
   const isEditing = Boolean(id)
+
+  const initialType = (searchParams.get('type') as ScheduleType | null) ?? undefined
+  const initialMemberId = searchParams.get('memberId')
 
   if (isEditing && query.isPending) {
     return (
@@ -71,15 +75,25 @@ export function ScheduleFormPage() {
     )
   }
 
-  return <ScheduleForm schedule={query.data} />
+  return (
+    <ScheduleForm
+      schedule={query.data}
+      initialType={initialType}
+      initialMemberId={initialMemberId}
+    />
+  )
 }
 
-function toFormValues(schedule: Schedule | undefined): ScheduleFormValues {
+function toFormValues(
+  schedule: Schedule | undefined,
+  initialType?: ScheduleType,
+  initialMemberId?: string | null,
+): ScheduleFormValues {
   if (!schedule) {
     return {
-      type: 'CHURCH_EVENT',
-      title: '',
-      description: '',
+      type: initialType ?? 'CHURCH_EVENT',
+      title: initialType === 'PASTOR_VISIT' ? 'Visita Pastoral' : '',
+      description: initialMemberId ? `Visita agendada para o membro (${initialMemberId})` : '',
       startDateTime: '',
       endDateTime: '',
       location: '',
@@ -114,7 +128,15 @@ function toFormValues(schedule: Schedule | undefined): ScheduleFormValues {
   }
 }
 
-function ScheduleForm({ schedule }: { schedule: Schedule | undefined }) {
+function ScheduleForm({
+  schedule,
+  initialType,
+  initialMemberId,
+}: {
+  schedule: Schedule | undefined
+  initialType?: ScheduleType
+  initialMemberId?: string | null
+}) {
   const navigate = useNavigate()
   const isEditing = Boolean(schedule)
   const saveSchedule = useSaveSchedule(schedule?.id)
@@ -122,7 +144,7 @@ function ScheduleForm({ schedule }: { schedule: Schedule | undefined }) {
 
   const form = useApiForm<ScheduleFormValues>({
     schema: scheduleSchema,
-    defaultValues: toFormValues(schedule),
+    defaultValues: toFormValues(schedule, initialType, initialMemberId),
     onSubmit: async (values) => {
       const preacher =
         values.pastorId || values.topic

@@ -1,12 +1,16 @@
 import { http, HttpResponse } from 'msw'
 import type { PageResponse } from '@/shared/types/api'
 import type {
+  AbsenteeListResponse,
   Church,
+  CreatePastoralRecordRequest,
   LoginResponse,
   Member,
   MemberSummary,
   MyChurchResponse,
+  PastoralCareRecord,
   PastorSummary,
+  Schedule,
   ScheduleSummary,
 } from '@/shared/types/domain'
 
@@ -42,7 +46,7 @@ export const fakeMember: Member = {
   fullName: 'Maria Souza',
   email: 'maria@exemplo.com',
   phone: '(11) 99999-0000',
-  whatsapp: null,
+  whatsapp: '(11) 99999-0000',
   dateOfBirth: '1990-05-20',
   gender: 'F',
   maritalStatus: 'MARRIED',
@@ -68,14 +72,86 @@ export const fakeMembers: PageResponse<MemberSummary> = {
       fullName: 'Maria Souza',
       email: 'maria@exemplo.com',
       phone: '(11) 99999-0000',
+      whatsapp: '(11) 99999-0000',
       city: 'São Paulo',
       status: 'ACTIVE',
       baptized: true,
       membershipDate: '2024-03-10',
+      dateOfBirth: '1990-05-20',
+      birthMonth: 5,
       profileImage: null,
     },
   ],
   pagination: { page: 1, pageSize: 20, totalItems: 1, totalPages: 1, hasNext: false, hasPrev: false },
+}
+
+export const fakePastoralCareRecords: PastoralCareRecord[] = [
+  {
+    id: 'pastoral-1',
+    churchId: 'church-1',
+    memberId: 'member-1',
+    pastorId: 'pastor-1',
+    pastorName: 'Pastor João Silva',
+    type: 'COUNSELING',
+    date: '2026-08-15',
+    subject: 'Aconselhamento familiar',
+    notes: 'Conversa sobre direcionamento espiritual e família.',
+    confidential: false,
+    createdAt: '2026-08-15T14:00:00Z',
+    updatedAt: '2026-08-15T14:00:00Z',
+  },
+  {
+    id: 'pastoral-2',
+    churchId: 'church-1',
+    memberId: 'member-1',
+    pastorId: 'pastor-1',
+    pastorName: 'Pastor João Silva',
+    type: 'VISIT',
+    date: '2026-09-01',
+    subject: 'Visita pastoral',
+    notes: 'Visita domiciliar com oração pelo lar.',
+    confidential: true,
+    createdAt: '2026-09-01T15:00:00Z',
+    updatedAt: '2026-09-01T15:00:00Z',
+  },
+]
+
+export const fakeAbsentees: AbsenteeListResponse = {
+  data: [
+    {
+      id: 'absentee-1',
+      memberId: 'member-2',
+      memberName: 'Carlos Eduardo',
+      phone: '(11) 98888-2222',
+      whatsapp: '(11) 98888-2222',
+      cellName: 'Célula Betel',
+      lastAttendanceDate: '2026-08-20',
+    },
+  ],
+  pagination: {
+    page: 1,
+    pageSize: 20,
+    totalItems: 1,
+    totalPages: 1,
+    hasNext: false,
+    hasPrev: false,
+  },
+  summary: { totalAbsentees: 1 },
+}
+
+export const fakeAttendance = {
+  data: [
+    {
+      id: 'att-1',
+      memberId: 'member-1',
+      memberName: 'Maria Souza',
+      checkInTime: '2026-09-06T21:45:00Z',
+      checkOutTime: null,
+      present: true,
+    },
+  ],
+  pagination: { page: 1, pageSize: 20, totalItems: 1, totalPages: 1, hasNext: false, hasPrev: false },
+  summary: { totalAttended: 1, totalExpected: 50, attendancePercentage: 2 },
 }
 
 export const fakeChurch: Church = {
@@ -130,6 +206,36 @@ const fakeSchedules: PageResponse<ScheduleSummary> = {
   pagination: { page: 1, pageSize: 20, totalItems: 1, totalPages: 1, hasNext: false, hasPrev: false },
 }
 
+export const fakeScheduleDetail: Schedule = {
+  id: 'schedule-1',
+  churchId: 'church-1',
+  type: 'CHURCH_EVENT',
+  title: 'Culto de Domingo',
+  description: 'Culto de celebração',
+  startDateTime: '2026-09-06T19:00:00Z',
+  endDateTime: '2026-09-06T21:00:00Z',
+  location: 'Templo principal',
+  address: 'Rua Principal, 100',
+  city: 'São Paulo',
+  preacher: {
+    pastorId: 'pastor-1',
+    pastorName: 'Pastor João Silva',
+    topic: 'Fé e Esperança',
+  },
+  eventDetails: {
+    capacity: 200,
+    visibility: 'PUBLIC',
+  },
+  notifications: {
+    sendReminder: true,
+    reminderDays: 1,
+  },
+  status: 'SCHEDULED',
+  createdBy: 'user-1',
+  createdAt: '2026-09-01T12:00:00Z',
+  updatedAt: '2026-09-01T12:00:00Z',
+}
+
 export const handlers = [
   http.post('*/api/v1/auth/login', () => HttpResponse.json(fakeSession)),
   http.post('*/api/v1/auth/register-church', () => HttpResponse.json(fakeSession, { status: 201 })),
@@ -140,7 +246,38 @@ export const handlers = [
     HttpResponse.json({ accessToken: 'access-token', tokenType: 'Bearer', expiresIn: 3600 }),
   ),
 
-  http.get('*/api/v1/members', () => HttpResponse.json(fakeMembers)),
+  http.get('*/api/v1/members', ({ request }) => {
+    const url = new URL(request.url)
+    const birthMonth = url.searchParams.get('birthMonth')
+    if (birthMonth) {
+      const monthNum = Number(birthMonth)
+      const filtered = fakeMembers.data.filter((m) => m.birthMonth === monthNum)
+      return HttpResponse.json({
+        data: filtered,
+        pagination: { ...fakeMembers.pagination, totalItems: filtered.length },
+      })
+    }
+    return HttpResponse.json(fakeMembers)
+  }),
+  http.get('*/api/v1/members/:id/pastoral-care', () => HttpResponse.json(fakePastoralCareRecords)),
+  http.post('*/api/v1/members/:id/pastoral-care', async ({ request, params }) => {
+    const body = (await request.json()) as CreatePastoralRecordRequest
+    const newRecord: PastoralCareRecord = {
+      id: `pastoral-${Date.now()}`,
+      churchId: 'church-1',
+      memberId: params.id as string,
+      pastorId: 'pastor-1',
+      pastorName: 'Pastor João Silva',
+      type: body.type,
+      date: body.date,
+      subject: body.subject,
+      notes: body.notes,
+      confidential: Boolean(body.confidential),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
+  }),
   http.get('*/api/v1/members/:id', () => HttpResponse.json(fakeMember)),
   http.post('*/api/v1/members', () => HttpResponse.json(fakeMember, { status: 201 })),
   http.put('*/api/v1/members/:id', () => HttpResponse.json(fakeMember)),
@@ -218,6 +355,14 @@ export const handlers = [
   http.get('*/api/v1/musicians', () => HttpResponse.json(emptyPage)),
   http.get('*/api/v1/sermons', () => HttpResponse.json(emptyPage)),
   http.get('*/api/v1/schedules', () => HttpResponse.json(fakeSchedules)),
+  http.get('*/api/v1/schedules/:id', () => HttpResponse.json(fakeScheduleDetail)),
+  http.get('*/api/v1/schedules/:id/attendance', () => HttpResponse.json(fakeAttendance)),
+  http.post('*/api/v1/schedules/:id/attendance', () =>
+    HttpResponse.json({ registered: 1, alreadyRegistered: 0, totalAttended: 2 }, { status: 201 }),
+  ),
+  http.delete('*/api/v1/schedules/:id/attendance/:memberId', () => new HttpResponse(null, { status: 204 })),
+  http.get('*/api/v1/schedules/:id/absentees', () => HttpResponse.json(fakeAbsentees)),
+  http.get('*/api/v1/schedules/:id/musicians', () => HttpResponse.json([])),
   http.get('*/api/v1/assets/summary', () =>
     HttpResponse.json({
       churchId: 'church-1',

@@ -52,4 +52,23 @@ describe('listagem de membros', () => {
       container.querySelector('input[aria-label="Buscar por nome, e-mail ou telefone"]'),
     ).toHaveValue('maria')
   })
+
+  it('mostra o badge de aniversário e ação do WhatsApp quando filtrado por mês', async () => {
+    renderWithProviders(<MembersPage />, {
+      roles: ['ADMIN_CHURCH'],
+      route: '/membros?birthMonth=5',
+    })
+
+    expect(await screen.findByText('Maria Souza')).toBeInTheDocument()
+    expect(screen.getByText(/Aniversário: 20\/05/i)).toBeInTheDocument()
+
+    const whatsappLink = screen.getByRole('link', {
+      name: /Enviar felicitação pelo WhatsApp para Maria Souza/i,
+    })
+    expect(whatsappLink).toBeInTheDocument()
+    expect(whatsappLink.getAttribute('href')).toContain('https://wa.me/5511999990000')
+    expect(whatsappLink.getAttribute('href')).toContain(
+      encodeURIComponent('A Paz do Senhor, Maria Souza! Toda a igreja celebra a sua vida hoje'),
+    )
+  })
 })

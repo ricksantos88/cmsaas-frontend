@@ -1,6 +1,7 @@
 import { http, omitUndefined, toQuery } from '@/shared/api/http'
 import type { IsoDate, IsoInstant, PageParams, PageResponse, PaginationMeta } from '@/shared/types/api'
 import type {
+  AbsenteeListResponse,
   CalendarResponse,
   EventDetails,
   Instrument,
@@ -92,6 +93,11 @@ export const schedulesApi = {
 
   undoAttendance: (id: string, memberId: string) =>
     http.delete<void>(`${BASE}/${id}/attendance/${memberId}`).then(() => undefined),
+
+  getAbsentees: (id: string, filters?: PageParams & { search?: string }) =>
+    http
+      .get<AbsenteeListResponse>(`${BASE}/${id}/absentees`, { params: toQuery({ ...filters }) })
+      .then((r) => r.data),
 
   // ── escala de músicos ──────────────────────────────────────────────────────
 

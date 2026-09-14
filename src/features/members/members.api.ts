@@ -1,24 +1,16 @@
 import { http, omitUndefined, toQuery } from '@/shared/api/http'
-import type { PageParams, PageResponse, SortParams, IsoDate } from '@/shared/types/api'
+import type { PageResponse } from '@/shared/types/api'
 import type {
   CreateMemberRequest,
   Member,
-  MemberStatus,
+  MemberFilters,
   MemberSummary,
   UpdateMemberRequest,
 } from '@/shared/types/domain'
 
 const BASE = '/api/v1/members'
 
-/** Filtros de `GET /members` — `churchId` não existe aqui de propósito (ADR-004). */
-export interface MemberFilters extends PageParams, SortParams {
-  search?: string
-  status?: MemberStatus
-  baptized?: boolean
-  city?: string
-  fromDate?: IsoDate
-  toDate?: IsoDate
-}
+export type { MemberFilters }
 
 export const membersApi = {
   list: (filters: MemberFilters) =>

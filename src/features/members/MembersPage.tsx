@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
+import { MessageCircle, Pencil, Plus, Trash2, UserPlus } from 'lucide-react'
 import { useDeleteMember, useMembers } from './members.queries'
 import type { MemberFilters } from './members.api'
 import { useSession } from '@/features/auth/useSession'
@@ -25,8 +25,8 @@ import { TableSkeleton } from '@/shared/ui/skeleton'
 import { EmptyState } from '@/shared/ui/states'
 import { Table, TBody, TD, TH, THead, TR } from '@/shared/ui/table'
 import { notifyError, notifySuccess } from '@/shared/ui/toast'
-import { formatDate } from '@/shared/lib/format'
-import { MEMBER_STATUS_LABELS, MEMBER_STATUS_TONES } from '@/shared/types/labels'
+import { buildWhatsAppLink, formatBirthday, formatDate } from '@/shared/lib/format'
+import { MEMBER_STATUS_LABELS, MEMBER_STATUS_TONES, MONTH_LABELS } from '@/shared/types/labels'
 import type { MemberStatus, MemberSummary } from '@/shared/types/domain'
 
 /**
@@ -41,12 +41,16 @@ export function MembersPage() {
   const [pendingDelete, setPendingDelete] = useState<MemberSummary | null>(null)
   const [invitingEntity, setInvitingEntity] = useState<{ name: string; email: string } | null>(null)
 
+  const birthMonthParam = get('birthMonth')
+  const birthMonth = birthMonthParam ? Number(birthMonthParam) : undefined
+
   const filters: MemberFilters = {
     page,
     limit: 20,
     search: get('search'),
     status: get('status') as MemberStatus | undefined,
     city: get('city'),
+    birthMonth,
   }
 
   const query = useMembers(filters)
@@ -96,6 +100,15 @@ export function MembersPage() {
             value={filters.status}
             onChange={(status) => setFilters({ status })}
           />
+          <EnumSelect
+            label="Filtrar por mês de aniversário"
+            placeholder="Mês de aniversário"
+            options={MONTH_LABELS}
+            value={filters.birthMonth}
+            onChange={(month) =>
+              setFilters({ birthMonth: month !== undefined ? String(month) : undefined })
+            }
+          />
         </FilterBar>
 
         <QueryStates
@@ -141,72 +154,120 @@ export function MembersPage() {
                   </TR>
                 </THead>
                 <TBody>
-                  {data.data.map((member) => (
-                    <TR key={member.id}>
-                      <TD className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Link to={`/membros/${member.id}`} className="hover:text-primary">
-                            {member.fullName}
-                          </Link>
-                          {member.hasUser && (
-                            <Badge tone="info" className="text-[10px] py-0 px-1.5">
-                              Usuário
-                            </Badge>
-                          )}
-                        </div>
-                      </TD>
-                      <TD className="text-content-muted">{member.email ?? member.phone ?? '—'}</TD>
-                      <TD className="text-content-muted">{member.city ?? '—'}</TD>
-                      <TD>
-                        <Badge tone={MEMBER_STATUS_TONES[member.status]}>
-                          {MEMBER_STATUS_LABELS[member.status]}
-                        </Badge>
-                      </TD>
-                      <TD className="text-content-muted">{member.baptized ? 'Sim' : 'Não'}</TD>
-                      <TD className="text-content-muted">{formatDate(member.membershipDate)}</TD>
-                      <TD>
-                        <DropdownMenu>
-                          <RowActionsTrigger label={`Ações de ${member.fullName}`} />
-                          <DropdownMenuContent>
-                            <DropdownMenuItem onSelect={() => void navigate(`/membros/${member.id}`)}>
-                              Ver detalhes
-                            </DropdownMenuItem>
-                            {canWrite && !member.hasUser && member.email && (
-                              <DropdownMenuItem
-                                onSelect={() =>
-                                  setInvitingEntity({
-                                    name: member.fullName,
-                                    email: member.email!,
-                                  })
-                                }
+                  {data.data.map((member) => {
+                    const contactPhone = member.whatsapp || member.phone
+                    const birthdayMessage = `A Paz do Senhor, ${member.fullName}! Toda a igreja celebra a sua vida hoje, que Deus continue te abençoando ricamente!`
+
+                    return (
+                      <TR key={member.id}>
+                        <TD className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <Link to={`/membros/${member.id}`} className="hover:text-primary">
+                              {member.fullName}
+                            </Link>
+                            {member.hasUser && (
+                              <Badge tone="info" className="text-[10px] py-0 px-1.5">
+                                Usuário
+                              </Badge>
+                            )}
+                            {(filters.birthMonth !== undefined || member.birthMonth) &&
+                              member.dateOfBirth && (
+                                <Badge
+                                  tone="accent"
+                                  className="text-[10px] py-0 px-1.5 font-normal"
+                                  title={`Data de nascimento: ${formatDate(member.dateOfBirth)}`}
+                                >
+                                  Aniversário: {formatBirthday(member.dateOfBirth)}
+                                </Badge>
+                              )}
+                          </div>
+                        </TD>
+                        <TD className="text-content-muted">{member.email ?? member.phone ?? '—'}</TD>
+                        <TD className="text-content-muted">{member.city ?? '—'}</TD>
+                        <TD>
+                          <Badge tone={MEMBER_STATUS_TONES[member.status]}>
+                            {MEMBER_STATUS_LABELS[member.status]}
+                          </Badge>
+                        </TD>
+                        <TD className="text-content-muted">{member.baptized ? 'Sim' : 'Não'}</TD>
+                        <TD className="text-content-muted">{formatDate(member.membershipDate)}</TD>
+                        <TD>
+                          <div className="flex items-center justify-end gap-1">
+                            {contactPhone && (
+                              <Button
+                                asChild
+                                variant="ghost"
+                                size="icon"
+                                aria-label={`Enviar felicitação pelo WhatsApp para ${member.fullName}`}
+                                title="Felicitar no WhatsApp"
                               >
-                                <UserPlus aria-hidden />
-                                Tornar usuário
-                              </DropdownMenuItem>
-                            )}
-                            {canWrite && (
-                              <>
-                                <DropdownMenuItem
-                                  onSelect={() => void navigate(`/membros/${member.id}/editar`)}
+                                <a
+                                  href={buildWhatsAppLink(contactPhone, birthdayMessage)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                 >
-                                  <Pencil aria-hidden />
-                                  Editar
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  destructive
-                                  onSelect={() => setPendingDelete(member)}
-                                >
-                                  <Trash2 aria-hidden />
-                                  Excluir
-                                </DropdownMenuItem>
-                              </>
+                                  <MessageCircle aria-hidden className="size-4 text-success" />
+                                </a>
+                              </Button>
                             )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TD>
-                    </TR>
-                  ))}
+                            <DropdownMenu>
+                              <RowActionsTrigger label={`Ações de ${member.fullName}`} />
+                              <DropdownMenuContent>
+                                <DropdownMenuItem onSelect={() => void navigate(`/membros/${member.id}`)}>
+                                  Ver detalhes
+                                </DropdownMenuItem>
+                                {contactPhone && (
+                                  <DropdownMenuItem
+                                    onSelect={() => {
+                                      window.open(
+                                        buildWhatsAppLink(contactPhone, birthdayMessage),
+                                        '_blank',
+                                        'noopener,noreferrer',
+                                      )
+                                    }}
+                                  >
+                                    <MessageCircle aria-hidden />
+                                    Felicitar no WhatsApp
+                                  </DropdownMenuItem>
+                                )}
+                                {canWrite && !member.hasUser && member.email && (
+                                  <DropdownMenuItem
+                                    onSelect={() =>
+                                      setInvitingEntity({
+                                        name: member.fullName,
+                                        email: member.email!,
+                                      })
+                                    }
+                                  >
+                                    <UserPlus aria-hidden />
+                                    Tornar usuário
+                                  </DropdownMenuItem>
+                                )}
+                                {canWrite && (
+                                  <>
+                                    <DropdownMenuItem
+                                      onSelect={() => void navigate(`/membros/${member.id}/editar`)}
+                                    >
+                                      <Pencil aria-hidden />
+                                      Editar
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                      destructive
+                                      onSelect={() => setPendingDelete(member)}
+                                    >
+                                      <Trash2 aria-hidden />
+                                      Excluir
+                                    </DropdownMenuItem>
+                                  </>
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </TD>
+                      </TR>
+                    )
+                  })}
                 </TBody>
               </Table>
               <Pagination meta={data.pagination} onPageChange={setPage} />

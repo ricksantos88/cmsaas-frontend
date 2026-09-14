@@ -127,7 +127,7 @@ export function PastorFormDialog({ open, onOpenChange, pastor }: PastorFormDialo
           <Field label="Telefone" error={formState.errors.phone?.message}>
             {(field) => <Input {...field} {...register('phone')} />}
           </Field>
-          <Field label="Data de nascimento">
+          <Field label="Data de nascimento" error={formState.errors.dateOfBirth?.message}>
             {(field) => <Input type="date" {...field} {...register('dateOfBirth')} />}
           </Field>
           <Field label="Função" required>
@@ -141,8 +141,10 @@ export function PastorFormDialog({ open, onOpenChange, pastor }: PastorFormDialo
               </Select>
             )}
           </Field>
-          <Field label="Cargo">{(field) => <Input {...field} {...register('position')} />}</Field>
-          <Field label="Data de ordenação">
+          <Field label="Cargo" error={formState.errors.position?.message}>
+            {(field) => <Input {...field} {...register('position')} />}
+          </Field>
+          <Field label="Data de ordenação" error={formState.errors.ordainmentDate?.message}>
             {(field) => <Input type="date" {...field} {...register('ordainmentDate')} />}
           </Field>
           <Field

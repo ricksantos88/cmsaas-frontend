@@ -68,3 +68,23 @@ export function formatTime(value: IsoInstant | null | undefined): string {
   if (!value) return '—'
   return new Intl.DateTimeFormat(LOCALE, { timeStyle: 'short' }).format(new Date(value))
 }
+
+/** Formata dia e mês de aniversário (ex.: 20/05). */
+export function formatBirthday(value: IsoDate | null | undefined): string {
+  if (!value) return '—'
+  const parts = value.split('-')
+  if (parts.length < 3) return '—'
+  const [, month, day] = parts
+  return `${day}/${month}`
+}
+
+/**
+ * Constrói link wa.me com telefone higienizado e mensagem codificada.
+ * Caso o número tenha 10 ou 11 dígitos (DDD + número no Brasil), inclui prefixo 55.
+ */
+export function buildWhatsAppLink(phone: string, message: string): string {
+  const digits = phone.replace(/\D/g, '')
+  const fullNumber = digits.length === 10 || digits.length === 11 ? `55${digits}` : digits
+  return `https://wa.me/${fullNumber}?text=${encodeURIComponent(message)}`
+}
+
