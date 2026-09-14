@@ -184,6 +184,24 @@ export const router = createBrowserRouter([
             }),
           },
 
+          {
+            element: <RequirePermission permission="finance.read" />,
+            children: [
+              {
+                path: 'financeiro',
+                lazy: async () => ({
+                  Component: (await import('@/features/finances/FinancesPage')).FinancesPage,
+                }),
+              },
+              {
+                path: 'configuracoes',
+                lazy: async () => ({
+                  Component: (await import('@/features/finances/FinancialCategoriesPage')).FinancialCategoriesPage,
+                }),
+              },
+            ],
+          },
+
           // Patrimônio expõe valores financeiros: rota inteira restrita (ADR-005 R3).
           {
             element: <RequirePermission permission="asset.read" />,

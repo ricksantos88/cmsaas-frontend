@@ -3,9 +3,11 @@ import {
   Boxes,
   Building2,
   CalendarDays,
+  DollarSign,
   FileText,
   Globe,
   Home,
+  Landmark,
   Music,
   Settings,
   Users,
@@ -55,8 +57,10 @@ export const NAVIGATION: NavGroup[] = [
   {
     title: 'Administração',
     items: [
+      { to: '/financeiro', label: 'Financeiro', icon: DollarSign, permission: 'finance.read' },
       { to: '/patrimonio', label: 'Patrimônio', icon: Boxes, permission: 'asset.read' },
-      { to: '/igreja', label: 'Dados da igreja', icon: Settings, permission: 'church.write' },
+      { to: '/igreja', label: 'Dados da igreja', icon: Landmark, permission: 'church.write' },
+      { to: '/configuracoes', label: 'Configurações', icon: Settings, permission: 'finance.read' },
       {
         to: '/plataforma/igrejas',
         label: 'Igrejas da plataforma',

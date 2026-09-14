@@ -695,3 +695,76 @@ export interface AbsenteeListResponse {
   summary?: { totalAbsentees?: number }
 }
 
+// ── finance ──────────────────────────────────────────────────────────────────
+
+export type FinancialType = 'INCOME' | 'EXPENSE'
+export type PaymentMethod = 'CASH' | 'PIX' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'OTHER'
+export type EntryStatus = 'PENDING' | 'PAID' | 'CANCELLED'
+
+export interface Category {
+  id: Uuid
+  name: string
+  type: FinancialType
+  isSystemDefault?: boolean
+}
+
+export interface CreateCategoryRequest {
+  name: string
+  type: FinancialType
+}
+
+export type UpdateCategoryRequest = Partial<CreateCategoryRequest>
+
+export interface FinancialEntry {
+  id: Uuid
+  churchId: Uuid | null
+  description: string | null
+  type: FinancialType
+  amount: number
+  date: IsoDate
+  categoryId: Uuid
+  categoryName: string
+  paymentMethod: PaymentMethod
+  status: EntryStatus
+  memberId: Uuid | null
+  memberName: string | null
+  createdAt: IsoInstant
+  updatedAt: IsoInstant
+}
+
+export interface FinancialReport {
+  year: number
+  month: number
+  totalIncome: number
+  totalExpense: number
+  balance: number
+  incomesByCategory: { categoryId: Uuid; categoryName: string; amount: number }[]
+  expensesByCategory: { categoryId: Uuid; categoryName: string; amount: number }[]
+}
+
+export interface FinancialFilters {
+  page?: number
+  limit?: number
+  search?: string
+  type?: FinancialType
+  categoryId?: Uuid
+  status?: EntryStatus
+  year?: number
+  month?: number
+  sortBy?: string
+  sortOrder?: 'ASC' | 'DESC'
+}
+
+export interface CreateFinancialEntryRequest {
+  description?: string | null
+  type: FinancialType
+  amount: number
+  date: IsoDate
+  categoryId: Uuid
+  paymentMethod: PaymentMethod
+  status: EntryStatus
+  memberId?: Uuid | null
+}
+
+export type UpdateFinancialEntryRequest = Partial<CreateFinancialEntryRequest>
+

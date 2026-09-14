@@ -56,6 +56,8 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 
 ## ✅ Fase 5 — Administração
 
+- [x] **Financeiro**: listagem de extrato (lançamentos), DRE/relatórios, CRUD de transações
+- [x] **Configurações Financeiras**: CRUD de categorias de receitas/despesas
 - [x] **Patrimônio**: resumo em cartões, listagem, cadastro/edição, manutenção, baixa
 - [x] **Dados da igreja**: identificação, contatos, endereço, pastor presidente
 - [x] **Plataforma** (`SUPER_ADMIN`): listar, criar e desativar igrejas

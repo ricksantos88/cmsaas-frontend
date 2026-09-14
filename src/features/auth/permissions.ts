@@ -26,6 +26,8 @@ export const PERMISSIONS = {
   'notification.send': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY', 'ADMIN_CHURCH', 'WORSHIP_LEADER'],
   'pastoralCare.read': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY'],
   'pastoralCare.write': ['PASTOR_PRESIDENT', 'PASTOR_AUXILIARY'],
+  'finance.read': ['PASTOR_PRESIDENT', 'ADMIN_CHURCH', 'TREASURER'],
+  'finance.write': ['PASTOR_PRESIDENT', 'ADMIN_CHURCH', 'TREASURER'],
 } as const satisfies Record<string, readonly Role[]>
 
 export type Permission = keyof typeof PERMISSIONS

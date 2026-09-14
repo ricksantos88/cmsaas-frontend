@@ -115,6 +115,18 @@ Recadastrar um músico removido **reativa** o registro (o POST devolve 200/201, 
 > O like pede `memberId` porque ainda não existe vínculo usuário↔membro no backend.
 > É funcionalidade do app do membro, não do console.
 
+## Finance — `features/finances/finances.api.ts`
+
+| Método | Rota | Observação |
+|--------|------|-----------|
+| GET | `/finances/entries` | Listagem de extrato com filtros, restrito a PASTOR_PRESIDENT, ADMIN_CHURCH, TREASURER |
+| POST/PATCH/DELETE | `/finances/entries` · `/finances/entries/{id}` | CRUD de transações |
+| GET | `/finances/report` | Relatório DRE agrupado por categorias |
+| GET | `/finances/categories` | Lista de categorias financeiras |
+| POST/PUT/DELETE | `/finances/categories` · `/finances/categories/{id}` | Manutenção de categorias |
+
+> Categorias com `isSystemDefault: true` não exibem botão de excluir (regra de UI).
+
 ## Notification — `features/notifications/notifications.api.ts`
 
 | Método | Rota | Observação |

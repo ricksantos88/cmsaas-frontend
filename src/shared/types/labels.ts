@@ -35,6 +35,9 @@ import type {
   SermonVisibility,
   SkillLevel,
   VoiceType,
+  FinancialType,
+  PaymentMethod,
+  EntryStatus,
 } from './domain'
 import type { DayOfWeek } from './api'
 
@@ -395,5 +398,38 @@ export const PASTORAL_RECORD_TYPE_TONES: Record<PastoralRecordType, BadgeTone> =
   PRAYER_REQUEST: 'success',
   DISCIPLINE: 'danger',
   OTHER: 'neutral',
+}
+
+// ── finanças ─────────────────────────────────────────────────────────────────
+
+export const FINANCIAL_TYPE_LABELS: Record<FinancialType, string> = {
+  INCOME: 'Entrada',
+  EXPENSE: 'Saída',
+}
+
+export const FINANCIAL_TYPE_TONES: Record<FinancialType, BadgeTone> = {
+  INCOME: 'success',
+  EXPENSE: 'danger',
+}
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  CASH: 'Dinheiro',
+  PIX: 'PIX',
+  CREDIT_CARD: 'Cartão de Crédito',
+  DEBIT_CARD: 'Cartão de Débito',
+  BANK_TRANSFER: 'Transferência Bancária',
+  OTHER: 'Outro',
+}
+
+export const ENTRY_STATUS_LABELS: Record<EntryStatus, string> = {
+  PENDING: 'Pendente',
+  PAID: 'Pago',
+  CANCELLED: 'Cancelado',
+}
+
+export const ENTRY_STATUS_TONES: Record<EntryStatus, BadgeTone> = {
+  PENDING: 'warning',
+  PAID: 'success',
+  CANCELLED: 'danger',
 }
 
