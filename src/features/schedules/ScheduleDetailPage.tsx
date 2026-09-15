@@ -337,7 +337,7 @@ function AttendanceCard({
                         title="Agendar visita pastoral"
                         onClick={() =>
                           void navigate(
-                            `/agenda/novo?type=PASTOR_VISIT&memberId=${absentee.memberId}`,
+                            `/visitas-pastorais`,
                           )
                         }
                       >

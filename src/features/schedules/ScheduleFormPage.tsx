@@ -92,8 +92,8 @@ function toFormValues(
   if (!schedule) {
     return {
       type: initialType ?? 'CHURCH_EVENT',
-      title: initialType === 'PASTOR_VISIT' ? 'Visita Pastoral' : '',
-      description: initialMemberId ? `Visita agendada para o membro (${initialMemberId})` : '',
+      title: '',
+      description: initialMemberId ? `Evento para o membro (${initialMemberId})` : '',
       startDateTime: '',
       endDateTime: '',
       location: '',

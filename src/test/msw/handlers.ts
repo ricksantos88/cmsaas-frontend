@@ -10,6 +10,9 @@ import type {
   MyChurchResponse,
   PastoralCareRecord,
   PastorSummary,
+  RequestPastoralVisitPayload,
+  SchedulePastoralVisitRequest,
+  CompletePastoralVisitRequest,
   Schedule,
   ScheduleSummary,
 } from '@/shared/types/domain'
@@ -402,6 +405,109 @@ export const handlers = [
     }),
   ),
   http.put('*/api/v1/notifications/preferences', () => new HttpResponse(null, { status: 204 })),
+
+  http.get('*/api/v1/pastoral-visits', () =>
+    HttpResponse.json([
+      {
+        id: 'visit-1',
+        pastorId: 'pastor-1',
+        pastorName: 'Pastor João Silva',
+        requestedByMemberId: null,
+        requestedByMemberName: null,
+        status: 'SCHEDULED',
+        scheduledAt: '2026-09-20T15:00:00Z',
+        location: 'Residência do Membro',
+        reason: 'Acompanhamento da família',
+        summary: null,
+        requiresReturn: false,
+        returnDate: null,
+        members: [{ id: 'member-1', name: 'Maria Souza' }],
+        createdAt: '2026-09-15T10:00:00Z',
+      },
+    ]),
+  ),
+  http.get('*/api/v1/pastoral-visits/requests/my', () => HttpResponse.json([])),
+  http.post('*/api/v1/pastoral-visits/requests', async ({ request }) => {
+    const body = (await request.json()) as RequestPastoralVisitPayload
+    return HttpResponse.json(
+      {
+        id: `visit-${Date.now()}`,
+        pastorId: null,
+        pastorName: null,
+        requestedByMemberId: 'member-1',
+        requestedByMemberName: 'Maria Souza',
+        status: 'REQUESTED',
+        scheduledAt: body.preferredDate ?? null,
+        location: null,
+        reason: body.reason,
+        summary: null,
+        requiresReturn: false,
+        returnDate: null,
+        members: [{ id: 'member-1', name: 'Maria Souza' }],
+        createdAt: new Date().toISOString(),
+      },
+      { status: 201 },
+    )
+  }),
+  http.post('*/api/v1/pastoral-visits', async ({ request }) => {
+    const body = (await request.json()) as SchedulePastoralVisitRequest
+    return HttpResponse.json(
+      {
+        id: `visit-${Date.now()}`,
+        pastorId: body.pastorId ?? 'pastor-1',
+        pastorName: 'Pastor João Silva',
+        requestedByMemberId: null,
+        requestedByMemberName: null,
+        status: 'SCHEDULED',
+        scheduledAt: body.scheduledAt,
+        location: body.location ?? null,
+        reason: body.reason,
+        summary: null,
+        requiresReturn: false,
+        returnDate: null,
+        members: [{ id: 'member-1', name: 'Maria Souza' }],
+        createdAt: new Date().toISOString(),
+      },
+      { status: 201 },
+    )
+  }),
+  http.post('*/api/v1/pastoral-visits/:id/complete', async ({ request, params }) => {
+    const body = (await request.json()) as CompletePastoralVisitRequest
+    return HttpResponse.json({
+      id: params.id as string,
+      pastorId: 'pastor-1',
+      pastorName: 'Pastor João Silva',
+      requestedByMemberId: null,
+      requestedByMemberName: null,
+      status: 'COMPLETED',
+      scheduledAt: '2026-09-20T15:00:00Z',
+      location: 'Residência do Membro',
+      reason: 'Acompanhamento da família',
+      summary: body.summary,
+      requiresReturn: Boolean(body.requiresReturn),
+      returnDate: body.returnDate ?? null,
+      members: [{ id: 'member-1', name: 'Maria Souza' }],
+      createdAt: '2026-09-15T10:00:00Z',
+    })
+  }),
+  http.post('*/api/v1/pastoral-visits/:id/cancel', ({ params }) =>
+    HttpResponse.json({
+      id: params.id as string,
+      pastorId: 'pastor-1',
+      pastorName: 'Pastor João Silva',
+      requestedByMemberId: null,
+      requestedByMemberName: null,
+      status: 'CANCELLED',
+      scheduledAt: '2026-09-20T15:00:00Z',
+      location: 'Residência do Membro',
+      reason: 'Acompanhamento da família',
+      summary: null,
+      requiresReturn: false,
+      returnDate: null,
+      members: [{ id: 'member-1', name: 'Maria Souza' }],
+      createdAt: '2026-09-15T10:00:00Z',
+    }),
+  ),
 
   http.get('*/api/v1/churches/:id', () => HttpResponse.json(fakeChurch)),
   http.put('*/api/v1/churches/:id', () => HttpResponse.json(fakeChurch)),

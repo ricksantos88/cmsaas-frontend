@@ -144,6 +144,12 @@ export const router = createBrowserRouter([
               Component: (await import('@/features/schedules/ScheduleFormPage')).ScheduleFormPage,
             }),
           },
+          {
+            path: 'visitas-pastorais',
+            lazy: async () => ({
+              Component: (await import('@/features/pastoral-visits/PastoralVisitsPage')).PastoralVisitsPage,
+            }),
+          },
 
           {
             path: 'sermoes',

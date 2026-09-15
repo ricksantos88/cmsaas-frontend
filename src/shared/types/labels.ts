@@ -38,6 +38,7 @@ import type {
   FinancialType,
   PaymentMethod,
   EntryStatus,
+  PastoralVisitStatus,
 } from './domain'
 import type { DayOfWeek } from './api'
 
@@ -296,9 +297,24 @@ export const SCHEDULE_TYPE_LABELS: Record<ScheduleType, string> = {
   CHURCH_EVENT: 'Culto / evento',
   STUDY: 'Estudo bíblico',
   CELL_GROUP: 'Reunião de célula',
-  PASTOR_VISIT: 'Visita pastoral',
   PRAYER_MEETING: 'Reunião de oração',
   TRAINING: 'Treinamento',
+}
+
+// ── visitas pastorais ────────────────────────────────────────────────────────
+
+export const PASTORAL_VISIT_STATUS_LABELS: Record<PastoralVisitStatus, string> = {
+  REQUESTED: 'Solicitada pelo membro',
+  SCHEDULED: 'Agendada',
+  COMPLETED: 'Realizada',
+  CANCELLED: 'Cancelada',
+}
+
+export const PASTORAL_VISIT_STATUS_TONES: Record<PastoralVisitStatus, BadgeTone> = {
+  REQUESTED: 'warning',
+  SCHEDULED: 'info',
+  COMPLETED: 'success',
+  CANCELLED: 'danger',
 }
 
 export const SCHEDULE_STATUS_LABELS: Record<ScheduleStatus, string> = {
