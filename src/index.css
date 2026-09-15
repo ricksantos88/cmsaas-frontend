@@ -4,42 +4,41 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Tokens do design system — Tema Sálvia Nobre & Terracota Cálido (Eclesiástico).
- * Toda cor de tela sai daqui: componente não escreve `bg-slate-800` direto,
+ * Tokens do design system — CMSaaS (Verde-Oliva Profundo & Ouro Queimado).
+ * Toda cor de tela sai daqui: componente não escreve cor literal do Tailwind direto,
  * escreve `bg-surface` / `text-content-muted` / `bg-primary` / `bg-accent`.
- * Trocar a identidade visual da igreja = trocar este bloco.
  */
 @theme {
-  --color-canvas: oklch(0.982 0.006 140);
-  --color-surface: oklch(1 0 0);
-  --color-surface-muted: oklch(0.965 0.008 140);
-  --color-border-subtle: oklch(0.89 0.012 140);
+  --color-canvas: #FAF8F5;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F4F0E8;
+  --color-border-subtle: #E8E4DD;
 
-  --color-content: oklch(0.20 0.025 145);
-  --color-content-muted: oklch(0.48 0.025 145);
+  --color-content: #2D3748;
+  --color-content-muted: #64748B;
 
-  --color-primary: oklch(0.38 0.085 145);
-  --color-primary-hover: oklch(0.31 0.085 145);
-  --color-primary-foreground: oklch(0.99 0 0);
+  --color-primary: #17231E;
+  --color-primary-hover: #0F1714;
+  --color-primary-foreground: #FFFFFF;
 
-  --color-accent: oklch(0.58 0.16 48);
-  --color-accent-hover: oklch(0.50 0.16 48);
-  --color-accent-foreground: oklch(0.99 0 0);
+  --color-accent: #C59B27;
+  --color-accent-hover: #A8821B;
+  --color-accent-foreground: #FFFFFF;
 
-  /* Tokens da Sidebar Eclesiástica Nobre (Contrastante como no protótipo) */
-  --color-sidebar: oklch(0.24 0.04 145);
-  --color-sidebar-foreground: oklch(0.96 0.01 140);
-  --color-sidebar-muted: oklch(0.72 0.02 145);
-  --color-sidebar-border: oklch(0.30 0.03 145);
-  --color-sidebar-accent: oklch(0.30 0.05 145);
+  /* Tokens da Sidebar (Verde-Oliva Profundo #17231E) */
+  --color-sidebar: #17231E;
+  --color-sidebar-foreground: #FAF8F5;
+  --color-sidebar-muted: #94A3B8;
+  --color-sidebar-border: #24352D;
+  --color-sidebar-accent: #23342C;
 
-  --color-success: oklch(0.58 0.15 145);
-  --color-warning: oklch(0.68 0.15 58);
-  --color-danger: oklch(0.56 0.20 28);
-  --color-danger-foreground: oklch(0.99 0 0);
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-danger-foreground: #FFFFFF;
 
   --radius-card: 0.75rem;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   --spacing-sidebar: 16rem;
   --spacing-topbar: 3.5rem;

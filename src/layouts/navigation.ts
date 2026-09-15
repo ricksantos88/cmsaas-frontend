@@ -10,6 +10,7 @@ import {
   Landmark,
   Music,
   Settings,
+  UserCheck,
   Users,
   UsersRound,
   Video,
@@ -49,6 +50,7 @@ export const NAVIGATION: NavGroup[] = [
     title: 'Atividades',
     items: [
       { to: '/agenda', label: 'Agenda', icon: CalendarDays },
+      { to: '/visitas-pastorais', label: 'Visitas Pastorais', icon: UserCheck, permission: 'pastoralVisit.read' },
       { to: '/sermoes', label: 'Sermões', icon: Video },
       { to: '/documentos', label: 'Documentos', icon: FileText },
       { to: '/notificacoes', label: 'Notificações', icon: Bell },

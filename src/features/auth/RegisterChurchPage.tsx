@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate, useNavigate } from 'react-router'
-import { Church, Loader2, Sparkles } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useSessionStore } from './session.store'
@@ -11,6 +11,7 @@ import { Button } from '@/shared/ui/button'
 import { Card, CardBody, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Field } from '@/shared/ui/field'
 import { Input } from '@/shared/ui/input'
+import { Logo } from '@/shared/ui/logo'
 import { notifySuccess } from '@/shared/ui/toast'
 import { DENOMINATION_LABELS } from '@/shared/types/labels'
 import type { Denomination } from '@/shared/types/domain'
@@ -126,11 +127,11 @@ export function RegisterChurchPage() {
   return (
     <main className="min-h-full bg-canvas px-4 py-12">
       <div className="mx-auto w-full max-w-xl space-y-6">
-        <div className="space-y-2 text-center">
-          <div className="mx-auto grid size-12 place-items-center rounded-card bg-primary text-primary-foreground shadow-sm">
-            <Church className="size-6" aria-hidden />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-content">Cadastre sua Igreja</h1>
+        <div className="space-y-3 text-center">
+          <Link to="/" className="inline-block focus-visible:outline-none">
+            <Logo className="mx-auto h-10 w-auto" />
+          </Link>
+          <h1 className="text-2xl font-bold tracking-tight text-primary">Cadastre sua Igreja</h1>
           <p className="text-sm text-content-muted">
             Crie o espaço digital da sua congregação e comece a gerenciar membros, cultos e ministérios.
           </p>

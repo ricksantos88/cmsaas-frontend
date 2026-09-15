@@ -20,9 +20,9 @@ describe('HomePage', () => {
     expect(registerButtons.length).toBeGreaterThanOrEqual(1)
     expect(registerButtons[0]).toHaveAttribute('href', '/registro')
 
-    const loginButton = screen.getByRole('link', { name: /acessar console/i })
-    expect(loginButton).toBeInTheDocument()
-    expect(loginButton).toHaveAttribute('href', '/login')
+    const loginButtons = screen.getAllByRole('link', { name: /acessar console/i })
+    expect(loginButtons.length).toBeGreaterThanOrEqual(1)
+    expect(loginButtons[0]).toHaveAttribute('href', '/login')
   })
 
   it('exibe os pilares da plataforma CMSaaS', () => {

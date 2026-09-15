@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
-import { Church, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useSessionStore } from './session.store'
 import { useSession } from './useSession'
+import { Logo } from '@/shared/ui/logo'
 import { ApiError } from '@/shared/api/api-error'
 import { Button } from '@/shared/ui/button'
 import { Field } from '@/shared/ui/field'
@@ -55,12 +56,12 @@ export function LoginPage() {
   return (
     <main className="grid min-h-full place-items-center bg-canvas px-4 py-12">
       <div className="w-full max-w-sm space-y-8">
-        <div className="space-y-2 text-center">
-          <div className="mx-auto grid size-12 place-items-center rounded-card bg-primary text-primary-foreground">
-            <Church className="size-6" aria-hidden />
-          </div>
-          <h1 className="text-xl font-semibold text-content">Console da Igreja</h1>
-          <p className="text-sm text-content-muted">Acesso administrativo do CMSaaS.</p>
+        <div className="space-y-3 text-center">
+          <Link to="/" className="inline-block focus-visible:outline-none">
+            <Logo className="mx-auto h-10 w-auto" />
+          </Link>
+          <h1 className="text-xl font-bold tracking-tight text-primary">Console da Igreja</h1>
+          <p className="text-sm text-content-muted leading-relaxed">Acesso administrativo do CMSaaS.</p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>

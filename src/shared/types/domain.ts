@@ -455,7 +455,53 @@ export interface DocumentDetail extends Omit<DocumentSummary, 'uploadedBy'> {
 
 // ── schedule ─────────────────────────────────────────────────────────────────
 
-export type ScheduleType = 'CHURCH_EVENT' | 'STUDY' | 'CELL_GROUP' | 'PASTOR_VISIT' | 'PRAYER_MEETING' | 'TRAINING'
+export type ScheduleType = 'CHURCH_EVENT' | 'STUDY' | 'CELL_GROUP' | 'PRAYER_MEETING' | 'TRAINING'
+
+// ── pastoral visits ──────────────────────────────────────────────────────────
+
+export type PastoralVisitStatus = 'REQUESTED' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED'
+
+export interface MemberSummaryDto {
+  id: Uuid
+  name: string
+}
+
+export interface PastoralVisit {
+  id: Uuid
+  pastorId: Uuid | null
+  pastorName: string | null
+  requestedByMemberId: Uuid | null
+  requestedByMemberName: string | null
+  status: PastoralVisitStatus
+  scheduledAt: IsoInstant | null
+  location: string | null
+  reason: string
+  summary: string | null
+  requiresReturn: boolean
+  returnDate: IsoDate | null
+  members: MemberSummaryDto[]
+  createdAt: IsoInstant
+}
+
+export interface RequestPastoralVisitPayload {
+  reason: string
+  preferredDate?: IsoInstant | null
+  notes?: string | null
+}
+
+export interface SchedulePastoralVisitRequest {
+  pastorId?: Uuid | null
+  memberIds: Uuid[]
+  scheduledAt: IsoInstant
+  location?: string | null
+  reason: string
+}
+
+export interface CompletePastoralVisitRequest {
+  summary: string
+  requiresReturn?: boolean
+  returnDate?: IsoDate | null
+}
 export type ScheduleStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED'
 export type ScheduleVisibility = 'PUBLIC' | 'MEMBERS_ONLY'
 export type ScaleStatus = 'INVITED' | 'CONFIRMED' | 'DECLINED'
