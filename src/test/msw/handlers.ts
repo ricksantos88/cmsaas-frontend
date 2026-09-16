@@ -64,6 +64,9 @@ export const fakeMember: Member = {
   profession: 'Professora',
   company: null,
   notes: null,
+  hasUser: true,
+  userId: 'user-maria',
+  userRoles: ['MEMBER'],
   createdAt: '2024-03-10T12:00:00Z',
   updatedAt: '2026-01-10T12:00:00Z',
 }
@@ -508,6 +511,45 @@ export const handlers = [
       createdAt: '2026-09-15T10:00:00Z',
     }),
   ),
+
+  http.get('*/api/v1/users', () =>
+    HttpResponse.json([
+      {
+        id: 'user-maria',
+        name: 'Maria Souza',
+        email: 'maria@exemplo.com',
+        roles: ['MEMBER'],
+        status: 'ACTIVE',
+        churchId: 'church-1',
+        lastLoginAt: '2026-08-31T09:00:00Z',
+        createdAt: '2024-03-10T12:00:00Z',
+      },
+      {
+        id: 'member-1',
+        name: 'Maria Souza',
+        email: 'maria@exemplo.com',
+        roles: ['MEMBER'],
+        status: 'ACTIVE',
+        churchId: 'church-1',
+        lastLoginAt: '2026-08-31T09:00:00Z',
+        createdAt: '2024-03-10T12:00:00Z',
+      },
+    ]),
+  ),
+
+  http.put('*/api/v1/users/:id/roles', async ({ request, params }) => {
+    const body = (await request.json()) as { roles: string[] }
+    return HttpResponse.json({
+      id: params.id as string,
+      name: 'Maria Souza',
+      email: 'maria@exemplo.com',
+      roles: body.roles,
+      status: 'ACTIVE',
+      churchId: 'church-1',
+      lastLoginAt: '2026-08-31T09:00:00Z',
+      createdAt: '2024-03-10T12:00:00Z',
+    })
+  }),
 
   http.get('*/api/v1/churches/:id', () => HttpResponse.json(fakeChurch)),
   http.put('*/api/v1/churches/:id', () => HttpResponse.json(fakeChurch)),

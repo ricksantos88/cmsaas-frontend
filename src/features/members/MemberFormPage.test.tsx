@@ -48,4 +48,39 @@ describe('formulário de membro', () => {
     await waitFor(() => expect(screen.getByLabelText(/^nome/i)).toHaveValue('Maria'))
     expect(screen.getByLabelText(/e-mail/i)).toBeDisabled()
   })
+
+  it('exibe a seção de Alterar Papéis do Usuário na edição para administrador da igreja', async () => {
+    renderWithProviders(<MemberFormPage />, {
+      roles: ['ADMIN_CHURCH'],
+      route: '/membros/member-1/editar',
+      path: '/membros/:id/editar',
+    })
+
+    await waitFor(() => expect(screen.getAllByText('Permissões de Acesso (Console Web)')[0]).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: /alterar papéis do usuário/i })).toBeInTheDocument()
+  })
+
+  it('permite abrir o modal e salvar novos papéis na tela de edição do membro', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderWithProviders(<MemberFormPage />, {
+      roles: ['PASTOR_PRESIDENT'],
+      route: '/membros/member-1/editar',
+      path: '/membros/:id/editar',
+    })
+
+    const rolesBtn = await screen.findByRole('button', { name: /alterar papéis do usuário/i })
+    await user.click(rolesBtn)
+
+    expect(await screen.findByText('Alterar Papéis (Roles) do Usuário')).toBeInTheDocument()
+
+    const tesourariaCheckbox = screen.getByLabelText(/tesouraria/i)
+    await user.click(tesourariaCheckbox)
+
+    const saveBtn = screen.getByRole('button', { name: /salvar alterações/i })
+    await user.click(saveBtn)
+
+    await waitFor(() => {
+      expect(screen.queryByText('Alterar Papéis (Roles) do Usuário')).not.toBeInTheDocument()
+    })
+  })
 })

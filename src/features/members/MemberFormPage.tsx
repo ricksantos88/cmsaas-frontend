@@ -1,6 +1,11 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { ShieldCheck } from 'lucide-react'
 import { useCreateMember, useMember, useUpdateMember } from './members.queries'
 import { emptyMemberForm, memberSchema, type MemberFormValues } from './members.schema'
+import { useSession } from '@/features/auth/useSession'
+import { UpdateUserRolesDialog } from '@/features/users/UpdateUserRolesDialog'
+import { Button } from '@/shared/ui/button'
 import { Card, CardBody } from '@/shared/ui/card'
 import { CardSkeleton } from '@/shared/ui/skeleton'
 import { ErrorState } from '@/shared/ui/states'
@@ -79,9 +84,11 @@ function toFormValues(member: Member | undefined): MemberFormValues {
 
 function MemberForm({ member }: { member: Member | undefined }) {
   const navigate = useNavigate()
+  const { can } = useSession()
   const createMember = useCreateMember()
   const updateMember = useUpdateMember(member?.id ?? '')
   const isEditing = Boolean(member)
+  const [rolesDialogOpen, setRolesDialogOpen] = useState(false)
 
   const form = useApiForm<MemberFormValues>({
     schema: memberSchema,
@@ -241,6 +248,28 @@ function MemberForm({ member }: { member: Member | undefined }) {
               </FormRow>
             </FormSection>
 
+            {isEditing && (member?.hasUser || member?.userId) && can('user.roles.write') && (
+              <FormSection title="Permissões de Acesso (Console Web)">
+                <div className="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border border-border-subtle bg-surface-muted/40 p-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-content">Papéis e Permissões do Usuário</p>
+                    <p className="text-xs text-content-muted">
+                      Gerencie as funções atribuídas à conta de operador no console (ex.: Tesouraria, Líder de Louvor, Pastor Presidente).
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRolesDialogOpen(true)}
+                  >
+                    <ShieldCheck className="size-4 mr-1.5" />
+                    Alterar Papéis do Usuário
+                  </Button>
+                </div>
+              </FormSection>
+            )}
+
             <FormActions
               onCancel={() => void navigate('/membros')}
               submitting={submitting}
@@ -249,6 +278,16 @@ function MemberForm({ member }: { member: Member | undefined }) {
           </form>
         </CardBody>
       </Card>
+
+      {isEditing && member && (member.hasUser || member.userId) && (
+        <UpdateUserRolesDialog
+          open={rolesDialogOpen}
+          onOpenChange={setRolesDialogOpen}
+          userId={member.userId ?? member.id}
+          userName={member.fullName}
+          currentRoles={member.userRoles ?? ['MEMBER']}
+        />
+      )}
     </div>
   )
 }

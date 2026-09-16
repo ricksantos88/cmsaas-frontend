@@ -55,4 +55,12 @@ describe('detalhe do membro e acompanhamento pastoral', () => {
       expect(screen.queryByText('Novo registro pastoral')).not.toBeInTheDocument()
     })
   })
+
+  it('exibe a seção de Conta de Acesso e Permissões em modo leitura no detalhe do membro', async () => {
+    renderWithProviders(<MemberDetailPage />, { roles: ['ADMIN_CHURCH'], ...options })
+
+    expect(await screen.findByText('Conta de acesso e Permissões')).toBeInTheDocument()
+    expect(screen.getByText('Possui conta de operador')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /alterar papéis/i })).not.toBeInTheDocument()
+  })
 })

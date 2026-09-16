@@ -22,6 +22,7 @@ import {
   PASTORAL_RECORD_TYPE_LABELS,
   PASTORAL_RECORD_TYPE_TONES,
 } from '@/shared/types/labels'
+import { ROLE_LABELS } from '@/shared/types/roles'
 
 export function MemberDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -103,6 +104,41 @@ export function MemberDetailPage() {
                       </Link>
                     ) : (
                       'Não participa'
+                    )}
+                  </DetailItem>
+                </DetailList>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Conta de acesso e Permissões</CardTitle>
+                <p className="text-xs text-content-muted">
+                  Papéis (roles) atribuídos ao usuário deste membro no console web.
+                </p>
+              </CardHeader>
+              <CardBody>
+                <DetailList>
+                  <DetailItem label="Acesso ao console">
+                    {member.hasUser || member.userId ? (
+                      <Badge tone="success">Possui conta de operador</Badge>
+                    ) : (
+                      <span className="text-sm text-content-muted">Sem conta de acesso vinculada</span>
+                    )}
+                  </DetailItem>
+                  <DetailItem label="Papéis ativos (Roles)" wide>
+                    {member.userRoles && member.userRoles.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {member.userRoles.map((role) => (
+                          <Badge key={role} tone="info">
+                            {ROLE_LABELS[role] ?? role}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-content-muted">
+                        {member.hasUser || member.userId ? 'Membro (padrão)' : 'Nenhum papel atribuído'}
+                      </span>
                     )}
                   </DetailItem>
                 </DetailList>

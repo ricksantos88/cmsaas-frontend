@@ -110,6 +110,22 @@ export interface AcceptInviteRequest {
   password: string
 }
 
+export interface UserSummary {
+  id: string
+  name: string
+  email: string
+  roles: Role[]
+  status: 'ACTIVE' | 'INACTIVE'
+  churchId: string | null
+  lastLoginAt: IsoInstant | null
+  createdAt: IsoInstant
+}
+
+/** `PUT /users/{id}/roles` — Alterar papéis/permissões de um usuário (ADR-0013). */
+export interface UpdateUserRolesRequest {
+  roles: Role[]
+}
+
 // ── church ───────────────────────────────────────────────────────────────────
 
 export type ChurchStatus = 'ACTIVE' | 'INACTIVE'
@@ -232,6 +248,7 @@ export interface Member {
   notes: string | null
   hasUser?: boolean
   userId?: Uuid | null
+  userRoles?: Role[]
   createdAt: IsoInstant
   updatedAt: IsoInstant
 }
