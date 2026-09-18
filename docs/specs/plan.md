@@ -78,7 +78,7 @@ A dependência anda em um sentido só: `features → shared`.
 | 2 | Design system: primitivos, modal, esqueleto, estados, formulário | ✅ |
 | 3 | Pessoas: membros, células, pastores, músicos | ✅ |
 | 4 | Atividades: agenda (+ presença e escala), sermões, documentos | ✅ |
-| 5 | Administração: patrimônio, dados da igreja, plataforma, notificações | ✅ |
+| 5 | Administração: patrimônio, dados da igreja, plataforma, notificações, financeiro | ✅ |
 | 6 | Painel com indicadores reais | ✅ |
 | 7 | Conta do usuário, recuperação de senha, preferências, modo escuro | ⏳ |
 | 8 | Cobertura por módulo, E2E do fluxo crítico, pipeline | ⏳ |

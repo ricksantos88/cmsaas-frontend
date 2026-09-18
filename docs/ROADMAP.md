@@ -33,6 +33,7 @@ Mapa **vivo** do frontend. Status detalhado por tarefa em
 | Sermon | ✅ | ✅ | ✅ | ✅ | tendências, relacionados, vídeo |
 | Document | ✅ | ✅ | ✅ | ✅ | upload, download autorizado |
 | Asset | ✅ | ✅ | ✅ | ✅ | detalhe com histórico, resumo, manutenção, baixa |
+| Finance | ✅ | ✅ | ✅ | ✅ | extrato, DRE, CRUD de categorias |
 | Notification | ✅ (inbox) | ✅ (envio) | — | — | preferências por tipo |
 
 ## Débitos conhecidos
@@ -49,4 +50,4 @@ Mapa **vivo** do frontend. Status detalhado por tarefa em
 - Cadastro/convite de usuário e vínculo usuário↔membro
 - `GET /members/{id}/family` e `POST /members/{id}/connect-pastor` (no contrato, ausentes no controller)
 
-**Última atualização**: 2026-09-04
+**Última atualização**: 2026-09-18
