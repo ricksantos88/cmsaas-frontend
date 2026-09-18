@@ -89,6 +89,9 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 - [x] **Suporte a múltiplas congregações** (`my-churches` e `switch-church`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
 - [x] **Seletor de congregação (ChurchSwitcher)** na Topbar com purga de cache (`queryClient.clear()`) ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
 - [x] **Atualizar onboarding (`/registro`)** com seleção de `adminRole` e novos tratamentos de erro ([ADR-009](../adr/0009-multi-church-memberships-and-tenant-switcher.md))
+- [x] **Diálogo de convite de usuário** (`InviteUserDialog`) na listagem de Membros e Pastores
+- [x] **Primeiro acesso com código de 4 dígitos** (`/primeiro-acesso`) para ativação de conta e cadastro de senha
+- [x] **Provisionamento de Pastor Presidente** ao tornar pastor em usuário do sistema com regra de unicidade e sincronização com a igreja ([ADR-0010](../adr/0010-pastor-president-user-provisioning.md))
 - [x] **Sistema de cores sóbrias eclesiásticas (Sálvia & Terracota)** ([ADR-011](../adr/0011-ecclesiastical-color-system.md))
 
 ## ⏳ Fase 8 — Qualidade e operação
@@ -109,5 +112,5 @@ Execução do [plan.md](./plan.md). **Fonte única de status**: marque aqui ao c
 
 - [ ] Refresh token em cookie `httpOnly` (elimina o risco de XSS da ADR-004)
 - [ ] Endpoint de dashboard agregado (hoje o painel soma `totalItems`)
-- [x] Cadastro/convite de usuários e vínculo usuário↔membro
+- [x] Cadastro/convite de usuários e vínculo usuário↔membro/pastor (Fase 7 do backend, ADR-005, ADR-006, ADR-0010)
 - [ ] Rotação de refresh no `/refresh` (débito aberto no ROADMAP do backend)

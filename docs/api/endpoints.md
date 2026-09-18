@@ -137,11 +137,21 @@ Recadastrar um músico removido **reativa** o registro (o POST devolve 200/201, 
 | GET/PUT | `/notifications/preferences` | Minha conta → Preferências |
 | POST/DELETE | `/notifications/devices` | só faz sentido no app mobile |
 
+## Users & Invites — `features/users/users.api.ts`
+
+| Método | Rota | Observação |
+|--------|------|-----------|
+| POST | `/api/v1/users/invites` | Gerar convite com código numérico de 4 dígitos (expira em 48h) |
+| POST | `/api/v1/users/invites/accept` | Primeiro acesso / ativação de convite com definição de senha e login imediato |
+| GET | `/api/v1/users/invites/pending` | Listagem de convites pendentes e válidos da igreja |
+| DELETE | `/api/v1/users/invites/{id}` | Cancelar convite pendente |
+| GET | `/api/v1/users` | Listar operadores/usuários da igreja |
+| PATCH | `/api/v1/users/{id}/roles` | Atualizar papéis/permissões do usuário |
+| PATCH | `/api/v1/users/{id}/status` | Ativar ou inativar usuário (revoga sessões) |
+
 ## O que o backend não oferece
 
-- Alterar `roles`, `churchId` ou `status` do próprio usuário — o `PUT /auth/me`
-  ignora esses campos de propósito; quem define é a administração
+- Alterar `roles`, `churchId` ou `status` do próprio usuário pelo `PUT /auth/me` —
+  ignora esses campos de propósito; quem define é a administração via `/api/v1/users/{id}`
 - Endpoint de dashboard agregado (o painel soma `totalItems` de listagens)
-- Cadastro/convite de usuário — `User` nasce por seed ou fora da API
-- Vínculo usuário↔membro
-- Push real (a porta existe; o envio é log)
+- Push real (a porta existe; o envio atual é em log/simulado)
