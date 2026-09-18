@@ -19,7 +19,7 @@ import { Button } from '@/shared/ui/button'
 import { Card, CardBody, CardHeader, CardTitle } from '@/shared/ui/card'
 import { DetailItem, DetailList } from '@/shared/ui/detail-list'
 import { Field } from '@/shared/ui/field'
-import { Input } from '@/shared/ui/input'
+import { Input, PasswordInput } from '@/shared/ui/input'
 import { PageHeader } from '@/shared/ui/page-header'
 import { notifyError, notifySuccess } from '@/shared/ui/toast'
 import { useApiForm } from '@/shared/lib/use-api-form'
@@ -252,8 +252,7 @@ function ChangePasswordCard() {
         <form className="max-w-md space-y-4" onSubmit={(event) => void submit(event)} noValidate>
           <Field label="Senha atual" required error={formState.errors.currentPassword?.message}>
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="current-password"
                 {...field}
                 {...register('currentPassword')}
@@ -268,8 +267,7 @@ function ChangePasswordCard() {
             hint="Mínimo de 8 caracteres."
           >
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 {...field}
                 {...register('newPassword')}
@@ -283,8 +281,7 @@ function ChangePasswordCard() {
             error={formState.errors.confirmPassword?.message}
           >
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 {...field}
                 {...register('confirmPassword')}

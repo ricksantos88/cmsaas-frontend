@@ -8,7 +8,7 @@ import { useSession } from './useSession'
 import { ApiError } from '@/shared/api/api-error'
 import { Button } from '@/shared/ui/button'
 import { Field } from '@/shared/ui/field'
-import { Input } from '@/shared/ui/input'
+import { Input, PasswordInput } from '@/shared/ui/input'
 import { notifySuccess } from '@/shared/ui/toast'
 
 const firstAccessSchema = z
@@ -132,8 +132,7 @@ export function FirstAccessPage() {
 
           <Field label="Nova Senha" required error={errors.password?.message}>
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 placeholder="No mínimo 8 caracteres"
                 {...field}
@@ -144,8 +143,7 @@ export function FirstAccessPage() {
 
           <Field label="Confirmar Senha" required error={errors.confirmPassword?.message}>
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 placeholder="Repita a senha"
                 {...field}

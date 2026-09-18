@@ -29,7 +29,7 @@ describe('RegisterChurchPage', () => {
     expect(screen.getByLabelText(/denominação/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/seu nome completo/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/e-mail de acesso/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/senha/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^senha/i, { selector: 'input' })).toBeInTheDocument()
     expect(screen.getByLabelText(/seu papel nesta igreja/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /concluir cadastro e acessar/i })).toBeInTheDocument()
   })
@@ -75,7 +75,7 @@ describe('RegisterChurchPage', () => {
     await user.type(screen.getByLabelText(/nome da igreja/i), 'Igreja Batista Nova Vida')
     await user.type(screen.getByLabelText(/seu nome completo/i), 'Pastor Samuel Silva')
     await user.type(screen.getByLabelText(/e-mail de acesso/i), 'samuel@batista.com')
-    await user.type(screen.getByLabelText(/senha/i), 'senhaForte123')
+    await user.type(screen.getByLabelText(/^senha/i, { selector: 'input' }), 'senhaForte123')
     await user.selectOptions(screen.getByLabelText(/seu papel nesta igreja/i), 'PASTOR_PRESIDENT')
 
     await user.click(screen.getByRole('button', { name: /concluir cadastro e acessar/i }))
@@ -117,7 +117,7 @@ describe('RegisterChurchPage', () => {
     await user.type(screen.getByLabelText(/nome da igreja/i), 'Igreja Batista Nova Vida')
     await user.type(screen.getByLabelText(/seu nome completo/i), 'Pastor Samuel Silva')
     await user.type(screen.getByLabelText(/e-mail de acesso/i), 'samuel@batista.com')
-    await user.type(screen.getByLabelText(/senha/i), 'senhaForte123')
+    await user.type(screen.getByLabelText(/^senha/i, { selector: 'input' }), 'senhaForte123')
 
     await user.click(screen.getByRole('button', { name: /concluir cadastro e acessar/i }))
 
@@ -149,7 +149,7 @@ describe('RegisterChurchPage', () => {
     await user.type(screen.getByLabelText(/nome da igreja/i), 'Igreja Filial Sul')
     await user.type(screen.getByLabelText(/seu nome completo/i), 'Membro Comum')
     await user.type(screen.getByLabelText(/e-mail de acesso/i), 'membro@igreja.com')
-    await user.type(screen.getByLabelText(/senha/i), 'senhaForte123')
+    await user.type(screen.getByLabelText(/^senha/i, { selector: 'input' }), 'senhaForte123')
 
     await user.click(screen.getByRole('button', { name: /concluir cadastro e acessar/i }))
 
@@ -183,7 +183,7 @@ describe('RegisterChurchPage', () => {
     await user.type(screen.getByLabelText(/nome da igreja/i), 'Igreja Filial Sul')
     await user.type(screen.getByLabelText(/seu nome completo/i), 'Pastor Samuel')
     await user.type(screen.getByLabelText(/e-mail de acesso/i), 'samuel@batista.com')
-    await user.type(screen.getByLabelText(/senha/i), 'senhaIncorreta123')
+    await user.type(screen.getByLabelText(/^senha/i, { selector: 'input' }), 'senhaIncorreta123')
 
     await user.click(screen.getByRole('button', { name: /concluir cadastro e acessar/i }))
 

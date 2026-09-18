@@ -8,7 +8,7 @@ import { useSession } from './useSession'
 import { ApiError } from '@/shared/api/api-error'
 import { Button } from '@/shared/ui/button'
 import { Field } from '@/shared/ui/field'
-import { Input } from '@/shared/ui/input'
+import { Input, PasswordInput } from '@/shared/ui/input'
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Informe o e-mail').email('E-mail inválido'),
@@ -72,8 +72,7 @@ export function LoginPage() {
 
           <Field label="Senha" required error={errors.password?.message}>
             {(field) => (
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="current-password"
                 {...field}
                 {...register('password')}

@@ -10,7 +10,7 @@ import { ApiError } from '@/shared/api/api-error'
 import { Button } from '@/shared/ui/button'
 import { Card, CardBody, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Field } from '@/shared/ui/field'
-import { Input } from '@/shared/ui/input'
+import { Input, PasswordInput } from '@/shared/ui/input'
 import { notifySuccess } from '@/shared/ui/toast'
 import { DENOMINATION_LABELS } from '@/shared/types/labels'
 import type { Denomination } from '@/shared/types/domain'
@@ -238,8 +238,7 @@ export function RegisterChurchPage() {
 
                   <Field label="Senha" required error={errors.adminPassword?.message}>
                     {(field) => (
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="Mínimo 8 caracteres"
                         autoComplete="new-password"
                         {...field}
